@@ -1,4 +1,5 @@
 * {
+
   font-family: sans-serif;
 }
 
@@ -89,3 +90,10 @@ li {
             border-color: #e6ae49;
             color: #323232;
         }
+
+
+
+.signup {
+	text-align: center;
+}
+
