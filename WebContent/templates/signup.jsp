@@ -12,20 +12,112 @@
     </h1>
     <hr>
     <div>
-      <form action="home.html">
+    	<%@ page import="java.sql.*"%>
+    	<%
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			Class.forName("org.postgresql.Driver");
+			
+			conn = DriverManager.getConnection(
+			"jdbc:postgresql://localhost:5432/postgres?" +
+        	"user=postgres&password=postgres");	
+		%>
+		<%
+			conn.setAutoCommit(false);
+			String username = request.getParameter("username");
+			String role = request.getParameter("role");
+			String age = request.getParameter("age");
+			String state = request.getParameter("state");
+
+				if(username == "" | role == "" | age == "" | state == ""){
+					System.out.println("Info cannot be empty. Please fill up the form again.");
+				}			
+		    	else { 
+				  System.out.println ("all fields are filled out.");			
+				  //Check if username is valid by checking duplicate in database
+				  //if it is valid, redirect to login page.(requirement: redirect to page says login successful)
+				  Statement statement = conn.createStatement();
+				  rs = statement.executeQuery("SELECT username FROM Client WHERE username ='" + username + "'");
+				  if(rs.next()){
+				  	System.out.println("username is already exist. Try a different name.");
+				  }else {
+					try {
+						Integer.parseInt(age);
+				
+						//Create the prepared statement and use it to insert signup 
+						//user information
+						pstmt = conn.prepareStatement("INSERT INTO Client(username, role, age, loc_state) VALUES (?,?,?,?)");
+						pstmt.setString(1, username);
+						pstmt.setString(2, role);
+						pstmt.setInt(3, Integer.parseInt(age));
+						pstmt.setString(4, state);
+			
+						int rowCount = pstmt.executeUpdate();
+				
+            			// Commit transaction
+            			conn.commit();
+            			conn.setAutoCommit(true);
+		
+						rs.close();
+	        			statement.close();
+	        		    conn.close();
+		
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.html");
+					}catch (NumberFormatException e) {
+						System.out.println("age must be a integer");	
+					}
+				}
+	     	}
+		}catch (SQLException e) {	
+			throw new RuntimeException(e);
+				
+        }
+        finally {
+        	// Release resources in a finally block in reverse-order of
+            // their creation
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) { } // Ignore
+                rs = null;
+            }
+            if (pstmt != null) {
+                try {
+                    pstmt.close();
+                } catch (SQLException e) { } // Ignore
+                pstmt = null;
+            }
+            if (conn != null) {
+                try {
+                    conn.close();
+                } catch (SQLException e) { } // Ignore
+                conn = null;
+            }
+        }
+		%>
+
+    
+      <form action="signup.jsp" method="">
         Please enter a username:<br>
         <input type="text" name="username" placeholder="Example123"><br>
     	  Please enter your age:<br>
         <input type="text" name="age" placeholder="Age in Years"><br>
     	  Please enter your desired account type:
+    		  
     	  <select name="role">
-          <option>--</option>
+          <!-- <option>--</option> -->
           <option value="customer">Customer</option>
           <option value="owner">Owner</option>
+          
         </select><br>
         Please select the state which you reside in:
+        
         <select name="state">
-          <option>--</option>
+          <!-- <option>--</option> -->
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
           <option value="AZ">Arizona</option>
@@ -77,6 +169,7 @@
           <option value="WV">West Virginia</option>
           <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
+          
         </select><br>
         <input type="submit" onclick="alert('Form Submitted!')" value="Create Account">    
       </form>
