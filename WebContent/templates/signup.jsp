@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
   <title>Signup Page</title>
@@ -6,7 +5,7 @@
   <link href="../css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body style="background-color:cyan">
-  <div class="signup">
+  <div class="text-center">
     <h1 style="color:blue">
       Signup
     </h1>
@@ -32,16 +31,24 @@
 			String age = request.getParameter("age");
 			String state = request.getParameter("state");
 
+			String alert = null;
+			if(username != null) {
 				if(username == "" | role == "" | age == "" | state == ""){
+					alert = "Info cannot be empty. Please fill out the form again.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 					System.out.println("Info cannot be empty. Please fill up the form again.");
 				}			
 		    	else { 
-				  System.out.println ("all fields are filled out.");			
+		    	  System.out.println ("all fields are filled out.");			
 				  //Check if username is valid by checking duplicate in database
 				  //if it is valid, redirect to login page.(requirement: redirect to page says login successful)
 				  Statement statement = conn.createStatement();
 				  rs = statement.executeQuery("SELECT username FROM Client WHERE username ='" + username + "'");
 				  if(rs.next()){
+				    alert = "username is already exist. Try a different name.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 				  	System.out.println("username is already exist. Try a different name.");
 				  }else {
 					try {
@@ -64,13 +71,17 @@
 						rs.close();
 	        			statement.close();
 	        		    conn.close();
-		
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username="+username);
+	        		    
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-success.jsp");
 					}catch (NumberFormatException e) {
-						System.out.println("age must be a integer");	
+						alert = "Age must be an integer";
+						session.setAttribute("error-msg", alert);
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
+						System.out.println("Age must be an integer");	
 					}
-				}
-	     	}
+				 }
+	     	  }
+			}
 		}catch (SQLException e) {	
 			throw new RuntimeException(e);
 				
@@ -101,7 +112,7 @@
 		%>
 
     
-      <form action="signup.jsp">
+      <form action="signup.jsp" method="">
         Please enter a username:<br>
         <input type="text" name="username" placeholder="Example123"><br>
     	  Please enter your age:<br>
@@ -171,7 +182,7 @@
           <option value="WY">Wyoming</option>
           
         </select><br>
-        <input type="submit" onclick="alert('Form Submitted!')" value="Create Account">    
+        <input class="btn" type="submit" onclick="alert('Form Submitted!')" value="Create Account">
       </form>
     </div>
   </div>

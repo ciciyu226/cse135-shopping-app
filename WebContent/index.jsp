@@ -6,11 +6,8 @@
     <link href="css/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <header>
-      <h2> Hello Cici! </h2>
-    </header>
     <main>
-      <div class="login">
+      <div class="wrapper text-center">
         <h2> Log In </h2>
         <%@ page import="java.sql.*" %>
         <%
@@ -29,20 +26,23 @@
         
         <%
 	        /* String action = request.getParameter("action"); */
-	    String input_name = request.getParameter("username");
+	    String username = request.getParameter("username");
 	    String alert = "";
 	    Statement statement = conn.createStatement();
 	    
 	    /* System.out.print(input_name) */
-	    if(input_name != "") {
+	    if(username != "") {
 	       	// Create the statement
-	        if (input_name != null) {
-		        rs = statement.executeQuery("SELECT username FROM Client WHERE username ='" + input_name + "'");
+	        if (username != null) {
+		        rs = statement.executeQuery("SELECT username, role FROM Client WHERE username ='" + username + "'");
 		       	if(!rs.next()) {
-		       		alert = "The Provided name " + input_name + " does not exist. Enter username again.";	
+		       		alert = "The Provided name " + username + " does not exist. Enter username again.";	
 		       	}
 		       	else{
-		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username=" + input_name);
+		       		String role = rs.getString("role");
+		       		session.setAttribute("username", username);
+		       		session.setAttribute("role", role);
+		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?");
 		       	}       	
 	        
 	        rs.close();

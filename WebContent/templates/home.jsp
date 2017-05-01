@@ -6,15 +6,18 @@
     <link href="../css/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <header>
-      <h2> Hello <%=request.getParameter("username")%> </h2>
-    </header>
     <main>
-      <div class="home">
+      <div class="wrapper">
+      	<h2> Hello <%=session.getAttribute("username")%> </h2>
         <h1> Home Page </h1>
         <div class="pagelinks">
           some jsp methods that display links to other pages based on user role
-          <a href="signup.jsp">Go to sign up</a>
+          <ul>
+         	<li><a href="signup.jsp">Go to sign up</a></li>
+          	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
+          	<li><a href="categories.jsp">Categories Page</a></li>
+          	<li><a href="products.jsp"</a>Products Page</li>
+          </ul>           
         </div>
       </div>
     </main>
