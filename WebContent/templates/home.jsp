@@ -17,7 +17,7 @@
           	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
           	<li><a href="categories.jsp">Categories Page</a></li>
           	<li><a href="products.jsp"</a>Products Page</li>
-          </ul>           
+          </ul>
         </div>
       </div>
     </main>
