@@ -65,7 +65,7 @@
 	        			statement.close();
 	        		    conn.close();
 		
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.html");
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username="+username);
 					}catch (NumberFormatException e) {
 						System.out.println("age must be a integer");	
 					}
@@ -101,7 +101,7 @@
 		%>
 
     
-      <form action="signup.jsp" method="">
+      <form action="signup.jsp">
         Please enter a username:<br>
         <input type="text" name="username" placeholder="Example123"><br>
     	  Please enter your age:<br>

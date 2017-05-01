@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -43,7 +42,7 @@
 		       		alert = "The Provided name " + input_name + " does not exist. Enter username again.";	
 		       	}
 		       	else{
-		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.html?username=" + input_name);
+		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username=" + input_name);
 		       	}       	
 	        
 	        rs.close();
@@ -61,7 +60,7 @@
         <input class=" btn btn-login" type="submit" value="Log In">
         
       	</form>
-      <a href="templates/signup.html" style="color:blue;">Don't have an account? Sign up here!</a>
+      <a href="templates/signup.jsp" style="color:blue;">Don't have an account? Sign up here!</a>
 	<%  }catch (SQLException e) {
         	throw new RuntimeException(e);	
         }

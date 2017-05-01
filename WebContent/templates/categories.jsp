@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -15,11 +14,10 @@
         <div class="pagelinks">
           some jsp methods that display all links.
           <ul>
-            <li><a href="home.html">Home Page</a></li>
-            <li><a href="categories.html">Categories Page</a></li>
-            <li><a href="product.html">Product Page</a></li>
-            <li><a href="product-browsing.html">Product Browsing Page</a></li>
-            <li><a href="product-order.html">Product Order Page</a></li>
+            <li><a href="home.jsp">Home Page</a></li>
+            <li><a href="product.jsp">Product Page</a></li>
+            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
+            <li><a href="product-order.jsp">Product Order Page</a></li>
           </ul>
         </div>
         <div class="cat_list_wrapper">

@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -8,7 +7,7 @@
   </head>
   <body>
     <header>
-      <h2> Hello Cici! </h2>
+      <h2> Hello <%=request.getParameter("username")%> </h2>
     </header>
     <main>
       <div class="home">
