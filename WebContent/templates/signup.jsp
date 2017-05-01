@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
   <title>Signup Page</title>
@@ -65,7 +64,8 @@
 	        			statement.close();
 	        		    conn.close();
 		
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username="+username);
+	        		    session.setAttribute("username",username);
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp");
 					}catch (NumberFormatException e) {
 						System.out.println("age must be a integer");	
 					}

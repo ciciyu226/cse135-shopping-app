@@ -7,7 +7,7 @@
   </head>
   <body>
     <header>
-      <h2> Hello Cici! </h2>
+      <h2> Please Log In Below </h2>
     </header>
     <main>
       <div class="login">
@@ -42,8 +42,9 @@
 		       		alert = "The Provided name " + input_name + " does not exist. Enter username again.";	
 		       	}
 		       	else{
-		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp?username=" + input_name);
-		       	}       	
+		       		session.setAttribute("username",input_name);
+		       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp");
+		       	}    	
 	        
 	        rs.close();
 	        statement.close();
@@ -88,8 +89,6 @@
             }
         }
         %>
-    
-     
       </div>
     </main>
   </body>

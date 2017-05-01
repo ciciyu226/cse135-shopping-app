@@ -7,7 +7,7 @@
   </head>
   <body>
     <header>
-      <h2> Hello <%=request.getParameter("username")%> </h2>
+      <h2> Hello <%=session.getAttribute("username")%> </h2>
     </header>
     <main>
       <div class="home">
