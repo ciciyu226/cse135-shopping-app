@@ -65,9 +65,10 @@
 	        		    conn.close();
 		
 	        		    session.setAttribute("username",username);
+	        		    session.setAttribute("role",role);
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp");
 					}catch (NumberFormatException e) {
-						System.out.println("age must be a integer");	
+						System.out.println("age must be an integer");	
 					}
 				}
 	     	}
