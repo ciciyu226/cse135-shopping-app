@@ -24,18 +24,7 @@
 		}
 		%>
       
-      <div class="wrapper">
-        <h2> Hello <%=session.getAttribute("username")%> </h2>
-        <h1> Categories Page </h1>
-        <div class="pagelinks">
-          some jsp methods that display all links.
-          <ul>
-            <li><a href="home.jsp">Home Page</a></li>
-            <li><a href="product.jsp">Product Page</a></li>
-            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
-            <li><a href="product-order.jsp">Product Order Page</a></li>
-          </ul>
-        </div>
+   
         <%@ page import="java.sql.*"%>
     	<%
 		Connection conn = null;
@@ -43,6 +32,7 @@
 		ResultSet rs = null;
 		ResultSet rs2 = null;
 		Statement statement= null;
+		String alert = "";
 		try {
 			Class.forName("org.postgresql.Driver");
 			
@@ -54,7 +44,7 @@
 			String cat_id = request.getParameter("cat_id");
         	String cat_name = request.getParameter("cat_name");
 			String cat_description = request.getParameter("cat_description");
-		
+		 
 			String action = request.getParameter("action");
 			
 		    	  //System.out.println ("all category fields are filled out.");			
@@ -68,12 +58,16 @@
 			/* 			alert = "Info cannot be empty. Please fill out the form again.";
 						session.setAttribute("error-msg", alert);
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp"); */
+						alert = "Data modification failed. Reason: Insert is empty. Please fill out the information again.";
+						session.setAttribute("error-msg", alert);
 						System.out.println("Category Info cannot be empty. Please fill up the form again.");
 					    }else{
 						statement = conn.createStatement();
 						
 						rs = statement.executeQuery("SELECT * FROM Category WHERE name ='" + cat_name + "'");
 						if(rs.next()){
+							alert = "Data modification failed. Reason: Category name is already exist. Try a different name.";
+							session.setAttribute("error-msg", alert);
 							System.out.println("category name is already exist. Try a different name.");
 						}else{
 						System.out.println("This category name is unique.");
@@ -94,18 +88,18 @@
 					/* Handling UPDATE */
 					if(action != null && action.equals("update")){
 						if(cat_name == "" | cat_description == ""){
-			/* 			alert = "Info cannot be empty. Please fill out the form again.";
+						alert = "Data modification failed. Reason: Update is empty. Please fill out the information again.";
 						session.setAttribute("error-msg", alert);
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp"); */
 						System.out.println("Category Info cannot be empty. Please fill up the form again.");
 					    }else{
 						System.out.println("update");
 						statement = conn.createStatement();
-						rs = statement.executeQuery("SELECT * FROM Category WHERE name ='" + cat_name + "'");
-							if(rs.next()){
+						rs = statement.executeQuery("SELECT * FROM Category WHERE id ='" + cat_id + "'");
+							if(!rs.next()){
+								alert = "Data modification failed. Reason: This category has already been deleted by other user.";
+								session.setAttribute("error-msg", alert);
 								System.out.println("category name is already exist. Try a different name.");
 							}else{
-							System.out.println("This category name is unique.");
 							conn.setAutoCommit(false);
 							
 							pstmt = conn.prepareStatement("UPDATE Category SET name= ?, description= ? WHERE id = ?");
@@ -133,6 +127,9 @@
 							System.out.println("category is deleted");
 							conn.commit();
 							conn.setAutoCommit(true);				
+						}else {
+							alert = "Data modification failed. Reason: Category is not empty.";
+							session.setAttribute("error-msg", alert);
 						}			
 					}
 				 
@@ -143,7 +140,23 @@
 			
 
 		%>
+       <div class="wrapper">
+        <% if(session.getAttribute("error-msg") != null){
+        %>
+        <h3 style="color: red"><%=session.getAttribute("error-msg") %></h3>
         
+        <%}%>
+        <h2> Hello <%=session.getAttribute("username")%> </h2>
+        <h1> Categories Page </h1>
+        <div class="pagelinks">
+          some jsp methods that display all links.
+          <ul>
+            <li><a href="home.jsp">Home Page</a></li>
+            <li><a href="product.jsp">Product Page</a></li>
+            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
+            <li><a href="product-order.jsp">Product Order Page</a></li>
+          </ul>
+        </div>
         <div class="cat_list_wrapper">
           <ul class="categoryList">
           	<li>
@@ -206,7 +219,8 @@
 
             <%-- -------- Close Connection Code -------- --%>
             <% System.out.println("THIRD POINT");
-
+            
+            session.removeAttribute("error-msg");
                 // Close the ResultSet
                 rs.close();
 
