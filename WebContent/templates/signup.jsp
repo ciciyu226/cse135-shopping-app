@@ -5,7 +5,7 @@
   <link href="../css/style.css" rel="stylesheet" type="text/css">
 </head>
 <body style="background-color:cyan">
-  <div class="signup">
+  <div class="text-center">
     <h1 style="color:blue">
       Signup
     </h1>
@@ -16,13 +16,13 @@
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		
+
 		try {
 			Class.forName("org.postgresql.Driver");
-			
+
 			conn = DriverManager.getConnection(
 			"jdbc:postgresql://localhost:5432/postgres?" +
-        	"user=postgres&password=postgres");	
+        	"user=postgres&password=postgres");
 		%>
 		<%
 			conn.setAutoCommit(false);
@@ -31,50 +31,61 @@
 			String age = request.getParameter("age");
 			String state = request.getParameter("state");
 
+			String alert = null;
+			if(username != null) {
 				if(username == "" | role == "" | age == "" | state == ""){
+					alert = "Info cannot be empty. Please fill out the form again.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 					System.out.println("Info cannot be empty. Please fill up the form again.");
-				}			
-		    	else { 
-				  System.out.println ("all fields are filled out.");			
+				}
+		    	else {
+		    	  System.out.println ("all fields are filled out.");
 				  //Check if username is valid by checking duplicate in database
 				  //if it is valid, redirect to login page.(requirement: redirect to page says login successful)
 				  Statement statement = conn.createStatement();
 				  rs = statement.executeQuery("SELECT username FROM Client WHERE username ='" + username + "'");
 				  if(rs.next()){
+				    alert = "username is already exist. Try a different name.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 				  	System.out.println("username is already exist. Try a different name.");
 				  }else {
 					try {
 						Integer.parseInt(age);
-				
-						//Create the prepared statement and use it to insert signup 
+
+						//Create the prepared statement and use it to insert signup
 						//user information
 						pstmt = conn.prepareStatement("INSERT INTO Client(username, role, age, loc_state) VALUES (?,?,?,?)");
 						pstmt.setString(1, username);
 						pstmt.setString(2, role);
 						pstmt.setInt(3, Integer.parseInt(age));
 						pstmt.setString(4, state);
-			
+
 						int rowCount = pstmt.executeUpdate();
-				
+
             			// Commit transaction
             			conn.commit();
             			conn.setAutoCommit(true);
-		
+
 						rs.close();
 	        			statement.close();
 	        		    conn.close();
-		
-	        		    session.setAttribute("username",username);
-	        		    session.setAttribute("role",role);
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/home.jsp");
+
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-success.jsp");
+
 					}catch (NumberFormatException e) {
-						System.out.println("age must be an integer");	
+						alert = "Age must be an integer";
+						session.setAttribute("error-msg", alert);
+						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
+						System.out.println("Age must be an integer");
 					}
 				}
-	     	}
-		}catch (SQLException e) {	
+	     }
+			}
+		}catch (SQLException e) {
 			throw new RuntimeException(e);
-				
+
         }
         finally {
         	// Release resources in a finally block in reverse-order of
@@ -101,22 +112,22 @@
         }
 		%>
 
-    
-      <form action="signup.jsp">
+
+      <form action="signup.jsp" method="">
         Please enter a username:<br>
         <input type="text" name="username" placeholder="Example123"><br>
     	  Please enter your age:<br>
         <input type="text" name="age" placeholder="Age in Years"><br>
     	  Please enter your desired account type:
-    		  
+
     	  <select name="role">
           <!-- <option>--</option> -->
           <option value="customer">Customer</option>
           <option value="owner">Owner</option>
-          
+
         </select><br>
         Please select the state which you reside in:
-        
+
         <select name="state">
           <!-- <option>--</option> -->
           <option value="AL">Alabama</option>
@@ -170,9 +181,9 @@
           <option value="WV">West Virginia</option>
           <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
-          
+
         </select><br>
-        <input type="submit" onclick="alert('Form Submitted!')" value="Create Account">    
+        <input class="btn" type="submit" onclick="alert('Form Submitted!')" value="Create Account">
       </form>
     </div>
   </div>
