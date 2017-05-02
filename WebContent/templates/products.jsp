@@ -18,7 +18,20 @@ if(session.getAttribute("username")==null) {
   	<h2>Hello <%=session.getAttribute("username") %>!</h2>
   </header>
   <main>
-  <table>Products
+  
+  <table>
+   <tr>
+  	 <td>
+  <ul>
+  	<li><a href="signup.jsp">Go to sign up</a></li>
+  	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
+  	<li><a href="home.jsp">Home Page</a></li>
+  	<li><a href="categories.jsp">Categories Page</a></li>
+  	<li><a href="products.jsp"></a>Products Page</li>
+  </ul>
+  	</td>
+  	<td>
+
     <%-- Import the java.sql package --%>
     <%@ page import="java.sql.*"%>
     <%-- -------- Open Connection Code -------- --%>
@@ -264,7 +277,9 @@ if(session.getAttribute("username")==null) {
     }
     %>
   </table>
-    
+  </td>
+  </tr>
+  </table>
   </main>
   </body>
 </html>
