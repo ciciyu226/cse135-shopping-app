@@ -79,8 +79,8 @@
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 						System.out.println("Age must be an integer");	
 					}
-				 }
-	     	  }
+				}
+	     }
 			}
 		}catch (SQLException e) {	
 			throw new RuntimeException(e);
