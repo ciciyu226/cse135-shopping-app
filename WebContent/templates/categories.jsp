@@ -8,6 +8,14 @@
   <body>
     <main>
       <%
+      	//Check to see if logged in or not.
+      	if(session.getAttribute("username")==null) {
+      		session.setAttribute("error","PLEASE LOG IN BEFORE ENTERING OTHER PAGES");
+      		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
+      		return;
+      	}
+      %>
+      <%
 		System.out.println(session.getAttribute("role"));
 		if(session.getAttribute("role").equals("customer") && 1==2){
 			

@@ -12,49 +12,38 @@
       	if(session.getAttribute("username")==null) {
       		session.setAttribute("error","PLEASE LOG IN BEFORE ENTERING OTHER PAGES");
       		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
+      		return;
       	}
-      	else{
-          %>
-		  	  <h2> Hello <%=session.getAttribute("username")%>! </h2>
-		      <text>You are a <%=session.getAttribute("role")%>.</text>
-		      <br>
-		      <a href="../index.jsp">Not you? Click here to sign in to a different account.<a>
-		      <div class="wrapper">
-		  	    <h1> Home Page </h1>
-		  	    <div class="pagelinks">
-		          <%
-		    	    if(session.getAttribute("role").equals("customer")){
-		    	  	//Only customers can see this
-		    	    %>
-		    		  <text>CUSTOMER PAGE</text>
-              <ul>
-                <li><a href="signup.jsp">Go to sign up</a></li>
-                <li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
-                <li><a href="categories.jsp">Categories Page</a></li>
-                <li><a href="products.jsp"</a>Products Page</li>
-              </ul>
-		    		  <text>Show links here later.</text>
-		    	    <%
-		    	    }
-		    	    else if(session.getAttribute("role").equals("owner")){
-		    	  	  //Only owners can see this
-		    		%>
-		    		  <text>OWNERS PAGE</text>
-		              <ul>
-		                <li><a href="signup.jsp">Go to sign up</a></li>
-		                <li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
-		                <li><a href="categories.jsp">Categories Page</a></li>
-		                <li><a href="products.jsp"</a>Products Page</li>
-		              </ul>
-		    		  <text>Show links here later.</text>
-		    		<%
-		    		  }
-		    		%>
-		  	</div>
-			</div>
-	  <%
-        }
       %>
+  	  <h2> Hello <%=session.getAttribute("username")%>! </h2>
+      <text>You are a <%=session.getAttribute("role")%>.</text>
+      <br>
+      <a href="../index.jsp">Not you? Click here to sign in to a different account.<a>
+      <div class="wrapper">
+  	    <h1> Home Page </h1>
+  	    <div class="pagelinks">
+          <%
+          	String categoryLink = "";
+          	String productLink = "";
+    	    if(session.getAttribute("role").equals("customer")){
+	    	  	//Only customers can see this
+	    	  	categoryLink = "error-ownerOnly.jsp";
+	    	  	productLink = "error-ownerOnly.jsp";
+    	    }
+    	    else if(session.getAttribute("role").equals("owner")){
+    	  	  	//Only owners can see this
+    	  		categoryLink = "categories.jsp";
+	    	  	productLink = "products.jsp";
+    	    }
+    	  %>
+          <ul>
+            <li><a href="signup.jsp">Go to sign up</a></li>
+            <li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
+            <li><a href="<%=categoryLink%>">Categories Page</a></li>
+            <li><a href="<%=productLink%>"</a>Products Page</li>
+          </ul>
+	    </div>
+	  </div>
     </main>
   </body>
 </html>

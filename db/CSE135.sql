@@ -16,7 +16,6 @@ CREATE TABLE Product (
     name        TEXT NOT NULL,
     SKU         TEXT UNIQUE NOT NULL,
     price       DECIMAL NOT NULL,
-    owner       INTEGER REFERENCES Client(id) NOT NULL,
     category    INTEGER REFERENCES Category(id) NOT NULL
 );
 
@@ -33,18 +32,11 @@ CREATE TABLE Purchase_History (
 -- Insert data into tables
 INSERT INTO Client (username, role, age, loc_state) VALUES ('ciciyu', 'customer', '22', 'CA');
 INSERT INTO Client (username, role, age, loc_state) VALUES ('davischo', 'customer', '22', 'CA');
--- INSERT INTO classes (name, number, date_code, start_time, end_time) VALUES ('Databases', 'CSE132A', 'TuTh', '3:30', '4:50');
--- INSERT INTO classes (name, number, date_code, start_time, end_time) VALUES ('Compilers', 'CSE131', 'F', '9:30', '10:50');
--- INSERT INTO classes (name, number, date_code, start_time, end_time) VALUES ('VLSI', 'CSE121', 'F', '11:00', '12:00');
---
--- INSERT INTO students (pid, first_name, last_name) VALUES ('8888888', 'John', 'Smith');
--- INSERT INTO students (pid, first_name, last_name) VALUES ('1111111', 'Mary', 'Doe');
--- INSERT INTO students (pid, first_name, last_name) VALUES ('2222222', 'Jay', 'Chen');
---
--- INSERT INTO enrollment (class, student, credits) VALUES (1, 1, 4);
--- INSERT INTO enrollment (class, student, credits) VALUES (1, 2, 3);
--- INSERT INTO enrollment (class, student, credits) VALUES (4, 3, 4);
--- INSERT INTO enrollment (class, student, credits) VALUES (1, 3, 3);
+INSERT INTO Category(name, description, owner) VALUES('Vegetables','All the healthy stuff','1');
+INSERT INTO Category(name, description, owner) VALUES('Fruits','Delicious','1');
+INSERT INTO Category(name, description, owner) VALUES('Animals','Cuuute','1');
+INSERT INTO Product (name, SKU, price, category) VALUES('potatoes','A1B2C3','0.79',1);
+INSERT INTO Product (name, SKU, price, category) VALUES('dog','woof','200.0',3);
 
 SELECT * FROM Client;
 SELECT * FROM Category;
