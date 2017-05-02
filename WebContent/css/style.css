@@ -15,9 +15,7 @@ li {
   margin: 50px 50px;
 
 }
-.cat_list_wrapper {
-  overflow: scroll;
-}
+
 
 .categoryList li {
   margin: 10px 0;
@@ -25,12 +23,14 @@ li {
   /*border: 1px solid #323232;*/
   border-radius: 5px;
   background-color: #d9b4f7;
-  text-align: center;
 }
 /*.categoryList label {
   color: #fff;
 }*/
 
+.categoryList form {
+	margin-bottom: 0;
+}
 
 .btn {
   margin:0 2.5px;
@@ -78,9 +78,7 @@ li {
     clear: both;
   }
 
-.cat_insert_btn {
-  text-align: center;
-}
+
 .cat_insert_btn button {
   padding-left: 80px;
   padding-right: 80px;
