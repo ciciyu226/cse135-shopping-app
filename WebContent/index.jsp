@@ -7,7 +7,7 @@
   </head>
   <body>
     <main>
-      <div class="login">
+      <div class="wrapper text-center">
       <%
       	session.removeAttribute("username");
       	session.removeAttribute("role");
@@ -18,9 +18,7 @@
       		session.removeAttribute("error");
       	}
       %>
-      <div class="wrapper text-center">
       	<h1>CSE135 Project 1</h1>
-      	<br>
         <h2>Log In</h2>
         <%@ page import="java.sql.*" %>
         <%
