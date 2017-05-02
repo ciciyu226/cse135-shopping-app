@@ -7,6 +7,14 @@
 <title>Products</title>
 </head>
 <body>
+<%
+//Check to see if logged in or not.
+if(session.getAttribute("username")==null) {
+	session.setAttribute("error","PLEASE LOG IN BEFORE ENTERING OTHER PAGES");
+	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
+	return;
+}
+%>
   <header>
   	<h2>Hello <%=session.getAttribute("username") %></h2>
   </header>
