@@ -16,13 +16,13 @@
 		Connection conn = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-
+		
 		try {
 			Class.forName("org.postgresql.Driver");
-
+			
 			conn = DriverManager.getConnection(
 			"jdbc:postgresql://localhost:5432/postgres?" +
-        	"user=postgres&password=postgres");
+        	"user=postgres&password=postgres");	
 		%>
 		<%
 			conn.setAutoCommit(false);
@@ -38,9 +38,9 @@
 					session.setAttribute("error-msg", alert);
 					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 					System.out.println("Info cannot be empty. Please fill up the form again.");
-				}
-		    	else {
-		    	  System.out.println ("all fields are filled out.");
+				}			
+		    	else { 
+		    	  System.out.println ("all fields are filled out.");			
 				  //Check if username is valid by checking duplicate in database
 				  //if it is valid, redirect to login page.(requirement: redirect to page says login successful)
 				  Statement statement = conn.createStatement();
@@ -53,39 +53,38 @@
 				  }else {
 					try {
 						Integer.parseInt(age);
-
-						//Create the prepared statement and use it to insert signup
+				
+						//Create the prepared statement and use it to insert signup 
 						//user information
 						pstmt = conn.prepareStatement("INSERT INTO Client(username, role, age, loc_state) VALUES (?,?,?,?)");
 						pstmt.setString(1, username);
 						pstmt.setString(2, role);
 						pstmt.setInt(3, Integer.parseInt(age));
 						pstmt.setString(4, state);
-
+			
 						int rowCount = pstmt.executeUpdate();
-
+				
             			// Commit transaction
             			conn.commit();
             			conn.setAutoCommit(true);
-
+		
 						rs.close();
 	        			statement.close();
 	        		    conn.close();
-
+	        		    
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-success.jsp");
-
 					}catch (NumberFormatException e) {
 						alert = "Age must be an integer";
 						session.setAttribute("error-msg", alert);
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
-						System.out.println("Age must be an integer");
+						System.out.println("Age must be an integer");	
 					}
 				 }
 	     	  }
 			}
-		}catch (SQLException e) {
+		}catch (SQLException e) {	
 			throw new RuntimeException(e);
-
+				
         }
         finally {
         	// Release resources in a finally block in reverse-order of
@@ -112,22 +111,22 @@
         }
 		%>
 
-
+    
       <form action="signup.jsp" method="">
         Please enter a username:<br>
         <input type="text" name="username" placeholder="Example123"><br>
     	  Please enter your age:<br>
         <input type="text" name="age" placeholder="Age in Years"><br>
     	  Please enter your desired account type:
-
+    		  
     	  <select name="role">
           <!-- <option>--</option> -->
           <option value="customer">Customer</option>
           <option value="owner">Owner</option>
-
+          
         </select><br>
         Please select the state which you reside in:
-
+        
         <select name="state">
           <!-- <option>--</option> -->
           <option value="AL">Alabama</option>
@@ -181,7 +180,7 @@
           <option value="WV">West Virginia</option>
           <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
-
+          
         </select><br>
         <input class="btn" type="submit" onclick="alert('Form Submitted!')" value="Create Account">
       </form>
