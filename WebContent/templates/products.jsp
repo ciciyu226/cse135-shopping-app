@@ -52,27 +52,60 @@ if(session.getAttribute("username")==null) {
   	<li><a href="products.jsp"></a>Products Page</li>
   </ul>
   	 </td>
+  	 <td><h1 style="color:blue">Welcome to the Products Page!</h1></td>
    </tr>
    </tr>
      <td>
+     <!-- SORTING SECTION -->
      <ul>
        <label>Sort by:</label>
-       <li><input type="text" placeholder="Item Name"></input></li>
-       <li><form name="Category" action="product.jsp" value="categorySort">Category:</form>
+       <li><form action="products.jsp" method="POST">
+       <% if( request.getParameter("nameSort")!= null && request.getParameter("nameSort")!="" ){
+    	   %>
+            <input placeholder="Item Name" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+       <% }
+       	  else{
+       	  %> 
+       		<input placeholder="Item Name" name="nameSort"></input>
+      <%  }%>
+         <input type="submit" value="Search"></input>
+         <%if(request.getParameter("categoryId")!=null && request.getParameter("categoryId")!=""){
+       	 %>
+         	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
+         	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
+       <%}%>	
+       </form></li>
+       <br>
+       <li>Category:</li>
+       <li>
        <%
      	  Statement categoryStatement = conn.createStatement();
      	  rs = categoryStatement.executeQuery("SELECT * FROM category");
+     	  %>
+     	  <form action="products.jsp" method="POST">
+     	  	<input type="submit" value="Show All"></input>
+     	  	<input type="hidden" name="categoryId" value="">
+     	 <% if( request.getParameter("nameSort")!= null && request.getParameter("nameSort")!="" ){
+    	   %>
+     	 	 	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+     	 <% } %>
+     	  </form>
+     	  <% 
      	  while( rs.next() ){
      		  %>
-     		  <ul>
-     		  	<li><input type="submit" value="<%=rs.getString("name")%>"></li>
-     		  </ul>
+     		  	<form action="products.jsp" method="POST">
+     		  	  <input type="hidden" name="categoryId" value="<%=rs.getInt("id")%>"/>
+     		  	  <input type="submit" name="categorySort" value="<%=rs.getString("name")%>"/>
+     		   <% if( request.getParameter("nameSort")!= null && request.getParameter("nameSort")!="" ){
+    	   %>
+     		  	  	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+     		   <% } %>
+     		  	</form>
      		  <%
-     		
      	  }
      	  rs = null;
        %>
-       </form></li>
+       </li>
      </ul>
      <ul>
        
@@ -86,26 +119,35 @@ if(session.getAttribute("username")==null) {
         // Check if an insertion is requested
         if (action != null && action.equals("insert")) { 
 
-            // Begin transaction
-            conn.setAutoCommit(false);
-
-            // Create the prepared statement and use it to
-            // INSERT student values INTO the students table.
-            pstmt = conn
-            .prepareStatement("INSERT INTO Product (name, SKU, price, category) VALUES (?, ?, ?, ?)");
-
-            pstmt.setString(1, request.getParameter("name"));
-            pstmt.setString(2, request.getParameter("SKU"));
-            pstmt.setDouble(3, Double.parseDouble(request.getParameter("price")));
-            pstmt.setInt(4, Integer.parseInt(request.getParameter("category")));
-            int rowCount = pstmt.executeUpdate();
-
-            // Commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
-            
-            action = null;
-            session.setAttribute("message", request.getParameter("name")+" was added to the list.");
+			//Check for all fields
+            if(request.getParameter("name")==null||request.getParameter("SKU")==null
+            		||request.getParameter("price")==null||request.getParameter("category")==null
+            		||request.getParameter("name")==""||request.getParameter("SKU")==""
+            		||request.getParameter("price")==""||request.getParameter("category")==""){
+            	session.setAttribute("message", "One or more field was empty. Please try again.");
+            }
+            else {
+	            // Begin transaction
+	            conn.setAutoCommit(false);
+	
+	            // Create the prepared statement and use it to
+	            // INSERT student values INTO the students table.
+	            pstmt = conn
+	            .prepareStatement("INSERT INTO Product (name, SKU, price, category) VALUES (?, ?, ?, ?)");
+	
+	            pstmt.setString(1, request.getParameter("name"));
+	            pstmt.setString(2, request.getParameter("SKU"));
+	            pstmt.setDouble(3, Double.parseDouble(request.getParameter("price")));
+	            pstmt.setInt(4, Integer.parseInt(request.getParameter("category")));
+	            int rowCount = pstmt.executeUpdate();
+	
+	            // Commit transaction
+	            conn.commit();
+	            conn.setAutoCommit(true);
+	            
+	            action = null;
+	            session.setAttribute("message", request.getParameter("name")+" was added to the list.");
+            }
         }
     %>
     <%-- -------- UPDATE Code -------- --%>
@@ -113,28 +155,38 @@ if(session.getAttribute("username")==null) {
         // Check if an update is requested
         if (action != null && action.equals("update")) {
 
-            // Begin transaction
-            conn.setAutoCommit(false);
-
-            // Create the prepared statement and use it to
-            // UPDATE student values in the Students table.
-            pstmt = conn
-                .prepareStatement("UPDATE Product SET name = ?, SKU = ?, "
-                    + "price = ?, category = ? WHERE id = ?");
-
-            pstmt.setString(1, request.getParameter("name"));
-            pstmt.setString(2, request.getParameter("SKU"));
-            pstmt.setDouble(3, Double.parseDouble(request.getParameter("price")));
-            pstmt.setInt(4, Integer.parseInt(request.getParameter("category")));
-            pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
-            int rowCount = pstmt.executeUpdate();
-
-            // Commit transaction
-            conn.commit();
-            conn.setAutoCommit(true);
-            
-            action = null;
-            session.setAttribute("message", request.getParameter("name")+" was updated.");
+        	//Check for all fields
+            if(request.getParameter("name")==null||request.getParameter("SKU")==null
+            		||request.getParameter("price")==null||request.getParameter("category")==null
+            		||request.getParameter("name")==""||request.getParameter("SKU")==""
+            		||request.getParameter("price")==""||request.getParameter("category")==""){
+            	session.setAttribute("message", "One or more field was empty. Please try again.");
+            }
+            else {
+	        	
+	            // Begin transaction
+	            conn.setAutoCommit(false);
+	
+	            // Create the prepared statement and use it to
+	            // UPDATE student values in the Students table.
+	            pstmt = conn
+	                .prepareStatement("UPDATE Product SET name = ?, SKU = ?, "
+	                    + "price = ?, category = ? WHERE id = ?");
+	
+	            pstmt.setString(1, request.getParameter("name"));
+	            pstmt.setString(2, request.getParameter("SKU"));
+	            pstmt.setDouble(3, Double.parseDouble(request.getParameter("price")));
+	            pstmt.setInt(4, Integer.parseInt(request.getParameter("category")));
+	            pstmt.setInt(5, Integer.parseInt(request.getParameter("id")));
+	            int rowCount = pstmt.executeUpdate();
+	
+	            // Commit transaction
+	            conn.commit();
+	            conn.setAutoCommit(true);
+	            
+	            action = null;
+	            session.setAttribute("message", request.getParameter("name")+" was updated.");
+            }
         }
     %>
     <%-- -------- DELETE Code -------- --%>
@@ -171,19 +223,58 @@ if(session.getAttribute("username")==null) {
     	rs2 = statement2.executeQuery("SELECT id,name FROM category");  
 
         // Use the created statement to SELECT
-        // the student attributes FROM the product table.
-        rs = statement.executeQuery("SELECT * FROM product");
-        //rs2 = statement.executeQuery("SELECT id,name FROM category");
+        // the student attributes FROM the Student table.
+        
+        /*
+         * THIS PART IS TO HANDLE THE SORTING
+        */
+        //Both category and search
+        if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" 
+        		&& request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
+			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+					+ request.getParameter("categoryId") + " AND name LIKE '%" 
+					+ request.getParameter("nameSort") + "%'");
+			session.setAttribute("sortMessage","Sorting by category and search: " 
+					+ request.getParameter("categorySort") + ", " + request.getParameter("nameSort"));
+        }//Just category
+        else if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" ){
+			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+				+ request.getParameter("categoryId"));
+			//System.out.println(request.getParameter("categoryId"));
+			session.setAttribute("sortMessage","Sorting by category: " + request.getParameter("categorySort"));
+		}//Just search
+        else if( request.getParameter("nameSort")!=null && request.getParameter("nameSort")!="" ){
+        	rs = statement.executeQuery("SELECT * FROM product WHERE name LIKE '%" 
+					+ request.getParameter("nameSort") + "%'");
+        	session.setAttribute("sortMessage","Searching for: " + request.getParameter("nameSort"));
+        }//show all
+		else{
+			session.removeAttribute("sortMessage");
+        	rs = statement.executeQuery("SELECT * FROM product");
+		}
     %>
     
     <!-- Add an HTML table header row to format the results -->
     
     <!-- Print out the message -->
-    <%if( session.getAttribute("message")!=null )
+    <%if( session.getAttribute("message")!=null && session.getAttribute("sortMessage")!=null )
+   	  {
+    	%>
+    	  <h3 style="color:red"><%=session.getAttribute("message")%> <%=session.getAttribute("sortMessage")%></h3>
+   <%     session.removeAttribute("message");
+   		  session.removeAttribute("sortMessage");
+      }
+      else if( session.getAttribute("message")!=null )
    	  {
     	%>
     	  <h3 style="color:red"><%=session.getAttribute("message")%></h3>
    <%     session.removeAttribute("message");
+      }
+      else if( session.getAttribute("sortMessage")!=null )
+   	  {
+    	%>
+    	  <h3 style="color:red"><%=session.getAttribute("sortMessage")%></h3>
+   <% 	  session.removeAttribute("sortMessage");
       } %>
       
     <table border="1" style="color:blue">
@@ -194,10 +285,21 @@ if(session.getAttribute("username")==null) {
         <th>Price</th>
         <th>Category</th>
     </tr>
-
+    
+	<!-- HTML FOR INSERT -->
     <tr>
         <form action="products.jsp" method="POST">
             <input type="hidden" name="action" value="insert"/>
+           <% if( request.getParameter("categoryId")!= null && request.getParameter("categoryId")!="" ){
+    	   %>
+            	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
+            	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
+           <% } %>
+           <% if( request.getParameter("nameSort")!= null && request.getParameter("nameSort")!="" ){
+    	   %> 
+            	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+           <% } %>
+            
             <!-- Removed id here -->
             <th><input name="name" placeholder="Enter Name" size="10"/></th>
             <th><input name="SKU" placeholder="Enter SKU" size="15"/></th>
@@ -258,19 +360,39 @@ if(session.getAttribute("username")==null) {
             while(rs2.next()){
             	if(rs2.getInt("id") != rs.getInt("category")){
             %>  
-              <option value="<%=rs2.getInt("id")%>"><%=rs2.getString("name")%></option>
-            <%}
+                  <option value="<%=rs2.getInt("id")%>"><%=rs2.getString("name")%></option>
+            <%
+            	}
             }
             %>
             </select>
         </td>
 
         <%-- Button --%>
+        <!-- HTML FOR UPDATE AND DELETE IS ABOVE AND BELOW THIS -->
         <td><input type="submit" value="Update"></td>
+      <%if(request.getParameter("categoryId")!=null && request.getParameter("categoryId")!=""){
+      %>
+        	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
+        	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
+     <% } %>
+      <%if(request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
+      %>
+        	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+     <% } %>
         </form>
         <form action="products.jsp" method="POST">
             <input type="hidden" name="action" value="delete"/>
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>" />
+		    <%if(request.getParameter("categoryId")!=null && request.getParameter("categoryId")!=""){
+		    %>
+		      	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
+		      	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
+		   <% } %>
+		    <%if(request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
+		    %>
+		      	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+		   <% } %>
             <%-- Button --%>
         <td><input type="submit" value="Delete"/></td>
         </form>
