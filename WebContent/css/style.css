@@ -7,12 +7,15 @@ li {
   display: block;
 }
 
+.pageLinks, .categoryList {
+	padding-left: 15px;
+}
 .text-center {
   text-align: center;	
 }
 
 .wrapper {
-  margin: 50px 50px;
+  margin: 25px 25px;
 
 }
 
@@ -80,8 +83,8 @@ li {
 
 
 .cat_insert_btn button {
-  padding-left: 80px;
-  padding-right: 80px;
+  padding-left: 90px;
+  padding-right: 90px;
 }
 
         input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, input[type="number"]:focus, input[type="radio"]:focus, input[type="checkbox"]:focus, input[type="password"]:focus, textarea:focus {

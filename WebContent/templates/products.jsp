@@ -136,7 +136,7 @@ if(session.getAttribute("username")==null) {
     	rs2 = statement2.executeQuery("SELECT id,name FROM category");  
 
         // Use the created statement to SELECT
-        // the student attributes FROM the Student table.
+        // the student attributes FROM the product table.
         rs = statement.executeQuery("SELECT * FROM product");
         //rs2 = statement.executeQuery("SELECT id,name FROM category");
     %>
@@ -207,16 +207,17 @@ if(session.getAttribute("username")==null) {
         <td>
             <select name="category">
             <%
-        	rs3 = statement3.executeQuery("SELECT name FROM category WHERE id=" + rs.getString("category"));
+        	rs3 = statement3.executeQuery("SELECT name FROM category WHERE id=" + rs.getInt("category"));
         	rs3.next();
         	String cat_name = rs3.getString("name");
             %>
-              <option value="<%=rs.getString("category")%>"><%=cat_name%></option>
+              <option value="<%=rs.getInt("category")%>"><%=cat_name%></option>
             <%
             while(rs2.next()){
-            %>
+            	if(rs2.getInt("id") != rs.getInt("category")){
+            %>  
               <option value="<%=rs2.getInt("id")%>"><%=rs2.getString("name")%></option>
-            <%
+            <%}
             }
             %>
             </select>
