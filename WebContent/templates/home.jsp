@@ -6,7 +6,7 @@
     <link href="../css/style.css" rel="stylesheet" type="text/css">
   </head>
   <body>
-    <main>
+    <main class="wrapper">
       <%
       	//Check to see if logged in or not.
       	if(session.getAttribute("username")==null) {

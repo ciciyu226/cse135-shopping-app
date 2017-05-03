@@ -83,9 +83,11 @@
 						conn.setAutoCommit(true);
 						}
 					  }
+					  action = null;
 					} 
 					/* Handling UPDATE */
 					if(action != null && action.equals("update")){
+						action = null;
 						if(cat_name == "" | cat_description == ""){
 						alert = "Data modification failed. Reason: Update is empty. Please fill out the information again.";
 						session.setAttribute("error-msg", alert);
@@ -97,7 +99,6 @@
 							if(!rs.next()){
 								alert = "Data modification failed. Reason: This category has already been deleted by other user.";
 								session.setAttribute("error-msg", alert);
-								System.out.println("category name is already exist. Try a different name.");
 							}else{
 							conn.setAutoCommit(false);
 							
@@ -115,6 +116,7 @@
 					System.out.println(action);
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
+						action = null;
 						System.out.println("delete");
 						statement = conn.createStatement();
 						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
@@ -139,86 +141,90 @@
 			
 		%>
        <div class="wrapper">
-        <% if(session.getAttribute("error-msg") != null){
+        <% 
+        if(session.getAttribute("error-msg") != null){
+        System.out.println("error message: " + session.getAttribute("error-msg") );
         %>
-        <h3 style="color: red"><%=session.getAttribute("error-msg") %></h3>
-        
-        <%}%>
-        <h2> Hello <%=session.getAttribute("username")%> </h2>
-        <h1> Categories Page </h1>
-        <div class="pagelinks">
-          some jsp methods that display all links.
-          <ul>
-            <li><a href="home.jsp">Home Page</a></li>
-            <li><a href="product.jsp">Product Page</a></li>
-            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
-            <li><a href="product-order.jsp">Product Order Page</a></li>
-          </ul>
-        </div>
-        <div class="cat_list_wrapper">
-          <ul class="categoryList">
-          	<li>
-	          <form action="categories.jsp" method="POST">
-		          <label>Category ID: </label><input style="background-color: #dee1e5" type="text"  disabled>
-		          <label>Category Name: </label><input type="text" name="cat_name">
-		          <label>Description: </label><input type="text" name="cat_description">
-		          <div style="display: inline-block" class="cat_insert_btn text-center"> 
-		            <button class="btn"> 
-		            	<input type="hidden" name="action" value="insert">
-		            	Insert 
-		            </button>
-                  </div> 
-		      </form>
-	       </li>
-          <%
-			//TODO: loop through the returned list from query and display them in each list element
-			
-			while(rs.next()){
-				System.out.println("FIRST POINT");
-		   %>
-			  <li> 
-				<form style="display: inline-block" action="categories.jsp" method="POST">
-					<label>Category ID: </label><input style="background-color: #dee1e5" type="text" value="<%=rs.getInt("id")%>" disabled>
-					<label>Category Name: </label><input type="text" value="<%=rs.getString("name")%>" name="cat_name"/>
-                	<label>Description: </label><input type="text" placeholder="some words about your category..." value="<%=rs.getString("description") %>" name="cat_description">
-                	<%/* TODO: check if current viewer is the owner of this category, if yes, then display the edit buttons 
-						TODO: check if this category is empty, only show delete button if it is empty.
-						TODO: concurency control: invalidate deleting when other user insert product into this category which was shown empty before.*/
-					%>
-                	<button class="btn cat_btn">
-          				<input type="hidden" name="action" value="update">
-          				<input type="hidden" name="cat_id" value="<%= rs.getInt("id")%>">
-                 		Update 
-                 	</button>
-                 </form>
-             <%  
-             	statement = conn.createStatement();
-				rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ rs.getInt("id"));
-             	if(!rs2.next()) {   %>
-                 <form style="display: inline-block" action="categories.jsp" method="POST">
-                	<button class="btn cat_btn">
-                		<input type="hidden" name="action" value="delete">
-                		<input type="hidden" name="cat_id" value="<%= rs.getInt("id") %>">
-                	 	Delete 
-                	</button>
-                </form>
-             <%  }  %>
-            </li>
-			<%	}	
-				System.out.println("SECOND POINT");
-		  %>
-		    
-        </ul>
-          
-          
-      </div>
+        <h3 style="color: red"><%=session.getAttribute("error-msg") %></h3> 
+        <%
+          session.removeAttribute("error-msg");
+        }%>
+        <h2> Hello <%=session.getAttribute("username")%>! </h2>
+        <h1 class="text-center"> Categories </h1>
+        <table>
+          <tr>
+        	<td>
+	          <ul class="pagelinks">
+	            <li><a href="home.jsp">Home Page</a></li>
+	            <li><a href="products.jsp">Products Page</a></li>
+	            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
+	            <li><a href="product-order.jsp">Product Order Page</a></li>
+	          </ul>
+           </td>
+            <td>
+		        <div class="cat_list_wrapper">
+		          <ul class="categoryList">
+		          	<li>
+			          <form action="categories.jsp" method="POST">
+				          <label>Category ID: </label><input style="background-color: #dee1e5" type="text"  disabled>
+				          <label>Category Name: </label><input type="text" name="cat_name">
+				          <label>Description: </label><input type="text" name="cat_description">
+				          <div style="display: inline-block" class="cat_insert_btn text-center"> 
+				            <button class="btn"> 
+				            	<input type="hidden" name="action" value="insert">
+				            	Insert 
+				            </button>
+		                  </div> 
+				      </form>
+			       </li>
+		          <%
+					//TODO: loop through the returned list from query and display them in each list element
+					
+					while(rs.next()){
+						System.out.println("FIRST POINT");
+				   %>
+					  <li> 
+						<form style="display: inline-block" action="categories.jsp" method="POST">
+							<label>Category ID: </label><input style="background-color: #dee1e5" type="text" value="<%=rs.getInt("id")%>" disabled>
+							<label>Category Name: </label><input type="text" value="<%=rs.getString("name")%>" name="cat_name"/>
+		                	<label>Description: </label><input type="text" placeholder="some words about your category..." value="<%=rs.getString("description") %>" name="cat_description">
+		                	<%/* TODO: check if current viewer is the owner of this category, if yes, then display the edit buttons 
+								TODO: check if this category is empty, only show delete button if it is empty.
+								TODO: concurency control: invalidate deleting when other user insert product into this category which was shown empty before.*/
+							%>
+		                	<button class="btn cat_btn">
+		          				<input type="hidden" name="action" value="update">
+		          				<input type="hidden" name="cat_id" value="<%= rs.getInt("id")%>">
+		                 		Update 
+		                 	</button>
+		                 </form>
+		             <%  
+		             	statement = conn.createStatement();
+						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ rs.getInt("id"));
+		             	if(!rs2.next()) {   %>
+		                 <form style="display: inline-block" action="categories.jsp" method="POST">
+		                	<button class="btn cat_btn">
+		                		<input type="hidden" name="action" value="delete">
+		                		<input type="hidden" name="cat_id" value="<%= rs.getInt("id") %>">
+		                	 	Delete 
+		                	</button>
+		                </form>
+		             <%  }  %>
+		            </li>
+					<%	}	
+						System.out.println("SECOND POINT");
+				  %>				    
+		        </ul>   
+		      </div>
+      		</td>
+     	 </tr>
+      </table>
     </div>
   </main>
 
             <%-- -------- Close Connection Code -------- --%>
             <% System.out.println("THIRD POINT");
             
-            session.removeAttribute("error-msg");
                 // Close the ResultSet
                 rs.close();
                 // Close the Statement

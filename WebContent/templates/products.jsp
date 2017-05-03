@@ -188,7 +188,6 @@ if(session.getAttribute("username")==null) {
 		}
 		else
         	rs = statement.executeQuery("SELECT * FROM product");
-
     %>
     
     <!-- Add an HTML table header row to format the results -->
@@ -264,16 +263,17 @@ if(session.getAttribute("username")==null) {
         <td>
             <select name="category">
             <%
-        	rs3 = statement3.executeQuery("SELECT name FROM category WHERE id=" + rs.getString("category"));
+        	rs3 = statement3.executeQuery("SELECT name FROM category WHERE id=" + rs.getInt("category"));
         	rs3.next();
         	String cat_name = rs3.getString("name");
             %>
-              <option value="<%=rs.getString("category")%>"><%=cat_name%></option>
+              <option value="<%=rs.getInt("category")%>"><%=cat_name%></option>
             <%
             while(rs2.next()){
-            %>
+            	if(rs2.getInt("id") != rs.getInt("category")){
+            %>  
               <option value="<%=rs2.getInt("id")%>"><%=rs2.getString("name")%></option>
-            <%
+            <%}
             }
             %>
             </select>
