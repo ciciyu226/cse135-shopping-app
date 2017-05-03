@@ -1,7 +1,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title> Products </title>
+  <title> Products Browsing </title>
   <!-- css links -->
   <link href="../css/style.css" rel="stylesheet" type="text/css">
 </head>
@@ -162,7 +162,6 @@ if(session.getAttribute("username")==null) {
 
     <tr>
         <form action="product-order.jsp" method="POST">
-            <input type="hidden" name="action" value="update"/>
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>"/>
 
         <%-- Get the id --%>
