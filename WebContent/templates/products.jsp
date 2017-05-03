@@ -384,9 +384,15 @@ if(session.getAttribute("username")==null) {
         <form action="products.jsp" method="POST">
             <input type="hidden" name="action" value="delete"/>
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>" />
-            <input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
-            <input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
-            <input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+		    <%if(request.getParameter("categoryId")!=null && request.getParameter("categoryId")!=""){
+		    %>
+		      	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
+		      	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
+		   <% } %>
+		    <%if(request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
+		    %>
+		      	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
+		   <% } %>
             <%-- Button --%>
         <td><input type="submit" value="Delete"/></td>
         </form>

@@ -33,10 +33,13 @@ CREATE TABLE Purchase_History (
 INSERT INTO Client (username, role, age, loc_state) VALUES ('ciciyu', 'customer', '22', 'CA');
 INSERT INTO Client (username, role, age, loc_state) VALUES ('davischo', 'customer', '22', 'CA');
 INSERT INTO Category(name, description, owner) VALUES('Vegetables','All the healthy stuff','1');
-INSERT INTO Category(name, description, owner) VALUES('Fruits','Delicious','1');
-INSERT INTO Category(name, description, owner) VALUES('Animals','Cuuute','1');
+INSERT INTO Category(name, description, owner) VALUES('Fruits','Delicious','2');
+INSERT INTO Category(name, description, owner) VALUES('Animals','Cuuute','3');
 INSERT INTO Product (name, SKU, price, category) VALUES('potatoes','A1B2C3','0.79',1);
 INSERT INTO Product (name, SKU, price, category) VALUES('dog','woof','200.0',3);
+INSERT INTO Product (name, SKU, price, category) VALUES('cat','meow','200.01',3);
+INSERT INTO Product (name, SKU, price, category) VALUES('banana','banana','.50',2);
+INSERT INTO Product (name, SKU, price, category) VALUES('carrot','plant','.75',1);
 
 SELECT * FROM Client;
 SELECT * FROM Category;
