@@ -19,19 +19,6 @@ if(session.getAttribute("username")==null) {
   </header>
   <main>
   
-  <table>
-   <tr>
-  	 <td>
-  <ul>
-  	<li><a href="signup.jsp">Go to sign up</a></li>
-  	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
-  	<li><a href="home.jsp">Home Page</a></li>
-  	<li><a href="categories.jsp">Categories Page</a></li>
-  	<li><a href="products.jsp"></a>Products Page</li>
-  </ul>
-  	</td>
-  	<td>
-
     <%-- Import the java.sql package --%>
     <%@ page import="java.sql.*"%>
     <%-- -------- Open Connection Code -------- --%>
@@ -54,11 +41,50 @@ if(session.getAttribute("username")==null) {
             "jdbc:postgresql://localhost:5432/postgres?" +
             "user=postgres&password=postgres");
     %>
+  <table>
+   <tr>
+  	 <td>
+  <ul>
+  	<li><a href="signup.jsp">Go to sign up</a></li>
+  	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
+  	<li><a href="home.jsp">Home Page</a></li>
+  	<li><a href="categories.jsp">Categories Page</a></li>
+  	<li><a href="products.jsp"></a>Products Page</li>
+  </ul>
+  	 </td>
+   </tr>
+   </tr>
+     <td>
+     <ul>
+       <label>Sort by:</label>
+       <li><input type="text" placeholder="Item Name"></input></li>
+       <li><form name="Category" action="product.jsp" value="categorySort">Category:</form>
+       <%
+     	  Statement categoryStatement = conn.createStatement();
+     	  rs = categoryStatement.executeQuery("SELECT * FROM category");
+     	  while( rs.next() ){
+     		  %>
+     		  <ul>
+     		  	<li><input type="submit" value="<%=rs.getString("name")%>"></li>
+     		  </ul>
+     		  <%
+     		
+     	  }
+     	  rs = null;
+       %>
+       </form></li>
+     </ul>
+     <ul>
+       
+     </ul>
+     </td>
+  	 <td>
+
     <%-- -------- INSERT Code -------- --%>
     <%
         String action = request.getParameter("action");
         // Check if an insertion is requested
-        if (action != null && action.equals("insert")) {
+        if (action != null && action.equals("insert")) { 
 
             // Begin transaction
             conn.setAutoCommit(false);
@@ -77,6 +103,9 @@ if(session.getAttribute("username")==null) {
             // Commit transaction
             conn.commit();
             conn.setAutoCommit(true);
+            
+            action = null;
+            session.setAttribute("message", request.getParameter("name")+" was added to the list.");
         }
     %>
     <%-- -------- UPDATE Code -------- --%>
@@ -103,6 +132,9 @@ if(session.getAttribute("username")==null) {
             // Commit transaction
             conn.commit();
             conn.setAutoCommit(true);
+            
+            action = null;
+            session.setAttribute("message", request.getParameter("name")+" was updated.");
         }
     %>
     <%-- -------- DELETE Code -------- --%>
@@ -124,6 +156,9 @@ if(session.getAttribute("username")==null) {
             // Commit transaction
             conn.commit();
             conn.setAutoCommit(true);
+            
+            action = null;
+            session.setAttribute("message", "Deleted item from the list.");
         }
     %>
     <%-- -------- SELECT Statement Code -------- --%>
@@ -142,9 +177,18 @@ if(session.getAttribute("username")==null) {
     %>
     
     <!-- Add an HTML table header row to format the results -->
-    <table border="1">
+    
+    <!-- Print out the message -->
+    <%if( session.getAttribute("message")!=null )
+   	  {
+    	%>
+    	  <h3 style="color:red"><%=session.getAttribute("message")%></h3>
+   <%     session.removeAttribute("message");
+      } %>
+      
+    <table border="1" style="color:blue">
     <tr>
-        <th>ID</th>
+     	<!-- Removed id here -->
         <th>Name</th>
         <th>SKU</th>
         <th>Price</th>
@@ -154,7 +198,7 @@ if(session.getAttribute("username")==null) {
     <tr>
         <form action="products.jsp" method="POST">
             <input type="hidden" name="action" value="insert"/>
-            <th>&nbsp;</th>
+            <!-- Removed id here -->
             <th><input name="name" placeholder="Enter Name" size="10"/></th>
             <th><input name="SKU" placeholder="Enter SKU" size="15"/></th>
             <th><input name="price" placeholder="Sell Price(Ex:3.99)" size="15"/></th>
@@ -184,9 +228,7 @@ if(session.getAttribute("username")==null) {
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>"/>
 
         <%-- Get the id --%>
-        <td>
-            <%=rs.getInt("id")%>
-        </td>
+		<!-- Removed id here -->
 
         <%-- Get the name --%>
         <td>

@@ -78,7 +78,6 @@
 						pstmt.setString(2, cat_description);
 						pstmt.setInt(3, (Integer)session.getAttribute("uid"));
 						int rowCount = pstmt.executeUpdate();
-
 						//commit transaction
 						conn.commit();
 						conn.setAutoCommit(true);
@@ -140,7 +139,6 @@
 			statement = conn.createStatement();
 			rs = statement.executeQuery("SELECT * FROM category");
 			
-
 		%>
        <div class="wrapper">
         <% 
@@ -229,15 +227,12 @@
             
                 // Close the ResultSet
                 rs.close();
-
                 // Close the Statement
                 statement.close();
-
                 // Close the Connection
                 conn.close();
                 
             } catch (SQLException e) {
-
                 // Wrap the SQL exception in a runtime exception to propagate
                 // it upwards
                 throw new RuntimeException(e);
@@ -245,7 +240,6 @@
             finally {
                 // Release resources in a finally block in reverse-order of
                 // their creation
-
                 if (rs != null) {
                     try {
                         rs.close();
