@@ -52,27 +52,36 @@ if(session.getAttribute("username")==null) {
   	<li><a href="products.jsp"></a>Products Page</li>
   </ul>
   	 </td>
+  	 <td><h1 style="color:blue">Welcome to the Products Page!</h1></td>
    </tr>
    </tr>
      <td>
      <ul>
        <label>Sort by:</label>
        <li><input type="text" placeholder="Item Name"></input></li>
-       <li><form name="Category" action="product.jsp" value="categorySort">Category:</form>
+       <br>
+       <li>Category:</li>
+       <li>
        <%
      	  Statement categoryStatement = conn.createStatement();
      	  rs = categoryStatement.executeQuery("SELECT * FROM category");
+     	  %>
+     	  <form action="products.jsp" method="POST">
+     	  	<input type="submit" value="Show All"></input>
+     	  	<input type="hidden" name="categoryId" value="">
+     	  </form>
+     	  <% 
      	  while( rs.next() ){
      		  %>
-     		  <ul>
-     		  	<li><input type="submit" value="<%=rs.getString("name")%>"></li>
-     		  </ul>
+     		  	<form action="products.jsp" method="POST">
+     		  	  <input type="hidden" name="categoryId" value="<%=rs.getInt("id")%>"/>
+     		  	  <input type="submit" name="categorySort" value="<%=rs.getString("name")%>"/>
+     		  	</form>
      		  <%
-     		
      	  }
      	  rs = null;
        %>
-       </form></li>
+       </li>
      </ul>
      <ul>
        
@@ -172,8 +181,14 @@ if(session.getAttribute("username")==null) {
 
         // Use the created statement to SELECT
         // the student attributes FROM the Student table.
-        rs = statement.executeQuery("SELECT * FROM product");
-        //rs2 = statement.executeQuery("SELECT id,name FROM category");
+		if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" ){
+			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+				+ request.getParameter("categoryId"));
+			//System.out.println(request.getParameter("categoryId"));
+		}
+		else
+        	rs = statement.executeQuery("SELECT * FROM product");
+
     %>
     
     <!-- Add an HTML table header row to format the results -->
