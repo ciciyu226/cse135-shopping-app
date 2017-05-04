@@ -13,6 +13,11 @@ if(session.getAttribute("username")==null) {
 	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
 	return;
 }
+//Check to see role
+if(session.getAttribute("role").equals("owner")!=true) {
+	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/error-ownerOnly.jsp");
+	return;
+}
 %>
   <header>
   	<h2>Hello <%=session.getAttribute("username") %>!</h2>
@@ -125,7 +130,7 @@ if(session.getAttribute("username")==null) {
             if(request.getParameter("name")==null||request.getParameter("SKU")==null
             		||request.getParameter("price")==null||request.getParameter("category")==null
             		||request.getParameter("name")==""||request.getParameter("SKU")==""
-            		||request.getParameter("price")==""||request.getParameter("category")==""){
+            		||request.getParameter("price")==""||request.getParameter("category")=="") {
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
             else {
@@ -133,6 +138,17 @@ if(session.getAttribute("username")==null) {
             		alert = "Price cannot be negative.";
     				session.setAttribute("message", alert);
             	}else{
+            	
+            	/*
+            	//Check if SKU is unique
+            	Statement skuCheck = conn.createStatement();
+            	ResultSet skuRs = skuCheck.executeQuery("SELECT * FROM product WHERE SKU=" + request.getParameter("SKU"));
+            	if( skuRs.next() ){
+            		session.setAttribute("message", "SKU is not unique. Please try a different one.");
+            		return;
+            	}
+            	*/
+            	
             	// Begin transaction
 	            conn.setAutoCommit(false);
 	
@@ -424,10 +440,16 @@ if(session.getAttribute("username")==null) {
         // Close the Connection
         conn.close();
     } catch (SQLException e) {
-
+    	if(e.getSQLState().equals("23505")){
+    		session.setAttribute("message", "SKU is not unique. Please try a different one.");
+    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+    	}
+    	else{
         // Wrap the SQL exception in a runtime exception to propagate
         // it upwards
         throw new RuntimeException(e);
+        
+    	}
     }
     finally {
         // Release resources in a finally block in reverse-order of
