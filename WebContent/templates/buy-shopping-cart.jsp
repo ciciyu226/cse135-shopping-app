@@ -14,7 +14,7 @@ if(session.getAttribute("username")==null) {
 	return;
 }
 %>
-<main>
+<main class="wrapper">
   <%-- Import the java.sql package --%>
   <%@ page import="java.sql.*"%>
   <%-- -------- Open Connection Code -------- --%>

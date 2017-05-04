@@ -29,6 +29,7 @@
 	    	  	//Only customers can see this
 	    	  	categoryLink = "error-ownerOnly.jsp";
 	    	  	productLink = "error-ownerOnly.jsp";
+				
     	    }
     	    else if(session.getAttribute("role").equals("owner")){
     	  	  	//Only owners can see this
@@ -40,7 +41,8 @@
             <li><a href="signup.jsp">Go to sign up</a></li>
             <li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
             <li><a href="<%=categoryLink%>">Categories Page</a></li>
-            <li><a href="<%=productLink%>"</a>Products Page</li>
+            <li><a href="<%=productLink%>">Products Page</a></li>
+            <li><a href="products-browsing.jsp">Products Browsing Page</a></li>
           </ul>
 	    </div>
 	  </div>

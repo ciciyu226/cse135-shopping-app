@@ -24,6 +24,7 @@
     Statement statement= null;
     ResultSet rs = null;
     ResultSet rs2 = null;
+    ResultSet rs3 = null;
     
     try {
         // Registering Postgresql JDBC driver with the DriverManager
@@ -36,33 +37,62 @@
     %>
     <%
     	System.out.println("=======================================");
-        String product_id = request.getParameter("product_id");
+        String product_id = request.getParameter("id");
     	System.out.println("product_id: "+product_id);
         String quantity = request.getParameter("quantity");  //TODO: need to parse to int later
         String price = request.getParameter("price");
         System.out.println("quantity: "+ quantity);
         String action = request.getParameter("action");
     	String alert = null;
+    	String msgSuccess= null;
     	
     	if(action != null && action.equals("submit-quantity")){
     		action = null;
     		
     		statement = conn.createStatement();
 			rs = statement.executeQuery("SELECT * FROM Product WHERE delete= 'Y' and id ='" + product_id + "'");
-				if(!rs.next()){
+				if(rs.next()){
 					alert = "Data modification failed. Reason: This product has already been deleted by an owner.";
 					session.setAttribute("error-msg", alert);
 					System.out.println("This product has already been deleted by other user.");
 				}
 				else {
-	
+				  try {
 		    		if(quantity == ""){
 		    			alert = "Update quantity failed: Quantity is empty.";
-		    			session.setAttribute("error-msg", alert);
+		    			session.setAttribute("msg-pOrder", alert);
 		    			System.out.println(alert);
-		    		}else{
-		   			
-				    		System.out.println("insert new tuple with submitted quantity");
+		    		}
+			    	else if(Integer.parseInt(quantity) < 1) {
+			    		alert = "Update quantity failed: Quantity cannot be zero or negative.";
+		    			session.setAttribute("msg-pOrder", alert);
+		    			System.out.println(alert);
+			    	}
+		    		else{
+		   					//check if product already exists in product_history table
+		   					//if it is, just update instead of insert
+		   					statement = conn.createStatement();
+						    rs3= statement.executeQuery("SELECT * FROM Purchase_History WHERE product=" + product_id);
+		   					if(rs3.next()){
+		   					  
+		   						//Begin transaction
+					    		conn.setAutoCommit(false);
+					    		
+					    		pstmt = conn.prepareStatement("UPDATE Purchase_History SET quantity= ? WHERE product="+ product_id);
+					    		pstmt.setInt(1, Integer.parseInt(quantity));
+					  
+					    		int rowCount = pstmt.executeUpdate();
+					    		
+					    		conn.commit();
+					    		conn.setAutoCommit(true);
+					    		
+		   					System.out.println("updating quantity of exist product.");	
+		   					msgSuccess= "Your new product quantity is submitted.";
+		   					session.setAttribute("msg", msgSuccess);
+		   					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
+		   					}else{
+				    		
+		    				System.out.println("insert new tuple with submitted quantity");
 				    	    //Begin transaction
 				    		conn.setAutoCommit(false);
 				    		
@@ -76,8 +106,18 @@
 				    		
 				    		conn.commit();
 				    		conn.setAutoCommit(true);
-					}
-    		    }
+				    		msgSuccess= "Your new product quantity is submitted.";
+				    		session.setAttribute("msg", msgSuccess);
+				    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
+		   					}
+
+		   			  }
+				  }catch (NumberFormatException e){
+					  alert = "Quantity must be an integer";
+					  session.setAttribute("msg-pOrder", alert);
+					  System.out.println("Quantity must be an integer");	
+				  }
+    		  }
     	}
     	//Handling SELECT All
     	statement = conn.createStatement();
@@ -89,11 +129,11 @@
     //TODO: if quantity change, display message: quantity of product x you want to buy has changed to y.
     %>
     <main class="wrapper">
-     <% if(session.getAttribute("error-msg") != null) { %>
-     <h3 style="color: red"><%=session.getAttribute("error-msg") %></h3>
-     <% session.removeAttribute("error-msg");
+     <% if(session.getAttribute("msg-pOrder") != null) { %>
+     <h3 style="color: red"><%=session.getAttribute("msg-pOrder") %></h3>
+     <% session.removeAttribute("msg-pOrder");
      }%>
-     <a href="product-browsing.jsp">Go back to PRODUCT BROWSING</a>
+     <a href="products-browsing.jsp">Go back to PRODUCT BROWSING</a>
      <h1>Product Order Page (shopping cart)</h1>
    <table border="1">
      	<tr>
@@ -116,7 +156,7 @@
 	<%-- -------- Iteration Code -------- --%>
 	<tr>
 	<% System.out.println("FIRST POINT"); %>
-   <form action="product-order.jsp" method="POST">
+   <form action="buy-shopping-cart.jsp" method="POST">
    	   <input type="hidden" name="action" value="submit-quantity"/>
   <%  while(rs.next()){
 	  System.out.println("Second POINT");%>
@@ -138,22 +178,22 @@
 		<input value="<%=rs2.getString("name")%>" name="name" size="15" readonly/>
 		
        </td>
-
-       <%-- Get the quantity --%>
-       <td>
-           <input value="<%=rs.getInt("quantity")%>" name="quantity" size="15" readonly/>
-       </td>
         <%-- Get the price --%>
        <td>
            <input value="<%=rs.getInt("price_at_purchase")%>" name="price" size="15" readonly/>
-       </td>     
-    </tr>
-    <tr><input type="submit" value="Confirm Shopping Cart"/></tr>
-    </form>
+       </td>   
+       
+       <%-- Get the quantity --%>
+       <td>
+           <input value="<%=rs.getInt("quantity")%>" name="quantity" size="15" readonly/>
+       </td>  
     </tr>
     <%
         }
-    %>
+    %> 
+    </form>    
+    </tr>
+
     <%-- -------- Close Connection Code -------- --%>
     <%
         // Close the ResultSet
