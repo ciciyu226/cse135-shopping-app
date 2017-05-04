@@ -86,29 +86,29 @@
 					    		conn.commit();
 					    		conn.setAutoCommit(true);
 					    		
-		   					System.out.println("updating quantity of exist product.");	
-		   					msgSuccess= "Your new product quantity is submitted.";
-		   					session.setAttribute("msg", msgSuccess);
-		   					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
+		   						System.out.println("updating quantity of existing product.");	
+		   						msgSuccess= "Your new product quantity has been updated.";
+		   						session.setAttribute("msg", msgSuccess);
+		   						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
 		   					}else {
 				    		
-		    				System.out.println("insert new tuple with submitted quantity");
-				    	    //Begin transaction
-				    		conn.setAutoCommit(false);
-				    		
-				    		pstmt = conn.prepareStatement("INSERT INTO Purchase_History (customer, product, quantity, price_at_purchase)"+
-				    							"VALUES (?,?,?,?)");
-				    		pstmt.setInt(1, (Integer)(session.getAttribute("uid")));
-				    		pstmt.setInt(2, Integer.parseInt(product_id));
-				    		pstmt.setInt(3, Integer.parseInt(quantity));
-				    		pstmt.setDouble(4, Double.parseDouble(price));
-				    		int rowCount = pstmt.executeUpdate();
-				    		
-				    		conn.commit();
-				    		conn.setAutoCommit(true);
-				    		msgSuccess= "Your new product quantity is submitted.";
-				    		session.setAttribute("msg", msgSuccess);
-				    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
+			    				System.out.println("insert new tuple with submitted quantity");
+					    	    //Begin transaction
+					    		conn.setAutoCommit(false);
+					    		
+					    		pstmt = conn.prepareStatement("INSERT INTO Purchase_History (customer, product, quantity, price_at_purchase)"+
+					    							"VALUES (?,?,?,?)");
+					    		pstmt.setInt(1, (Integer)(session.getAttribute("uid")));
+					    		pstmt.setInt(2, Integer.parseInt(product_id));
+					    		pstmt.setInt(3, Integer.parseInt(quantity));
+					    		pstmt.setDouble(4, Double.parseDouble(price));
+					    		int rowCount = pstmt.executeUpdate();
+					    		
+					    		conn.commit();
+					    		conn.setAutoCommit(true);
+					    		msgSuccess= "Successfully added item to cart.";
+					    		session.setAttribute("msg", msgSuccess);
+					    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
 		   					}
 
 		   			  }

@@ -125,28 +125,14 @@ if(session.getAttribute("role").equals("owner")!=true) {
         // Check if an insertion is requested
         if (action != null && action.equals("insert")) { 
 
-			//Check for all fields
+			//Check for all fields 
             if(request.getParameter("name")==null||request.getParameter("SKU")==null
             		||request.getParameter("price")==null||request.getParameter("category")==null
             		||request.getParameter("name")==""||request.getParameter("SKU")==""
             		||request.getParameter("price")==""||request.getParameter("category")=="") {
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
-            else {
-            	if(Double.parseDouble(request.getParameter("price")) < 0){
-            		alert = "Price cannot be negative.";
-    				session.setAttribute("message", alert);
-            	}else{
-            	
-            	/*
-            	//Check if SKU is unique
-            	Statement skuCheck = conn.createStatement();
-            	ResultSet skuRs = skuCheck.executeQuery("SELECT * FROM product WHERE SKU=" + request.getParameter("SKU"));
-            	if( skuRs.next() ){
-            		session.setAttribute("message", "SKU is not unique. Please try a different one.");
-            		return;
-            	}
-            	*/
+            else { 
             	
             	// Begin transaction
 	            conn.setAutoCommit(false);
@@ -168,7 +154,6 @@ if(session.getAttribute("role").equals("owner")!=true) {
 	            
 	            action = null;
 	            session.setAttribute("message", request.getParameter("name")+" was added to the list.");
-            }
           }
         }
     %>
@@ -439,13 +424,18 @@ if(session.getAttribute("role").equals("owner")!=true) {
         // Close the Connection
         conn.close();
     } catch (SQLException e) {
-    	if(e.getSQLState().equals("23505")){
+    	if(e.getSQLState().equals("23505")){ //Unique Violation
     		session.setAttribute("message", "SKU is not unique. Please try a different one.");
+    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+    	}
+    	else if(e.getSQLState().equals("23514")){ //Check Violation
+    		session.setAttribute("message","Price cannot be negative.");
     		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
     	}
     	else{
         // Wrap the SQL exception in a runtime exception to propagate
         // it upwards
+        System.out.println("SQL EXCEPTION IS: " + e.getSQLState());
         throw new RuntimeException(e);
         
     	}
