@@ -2,7 +2,7 @@ CREATE TABLE Client (
     id          SERIAL PRIMARY KEY,
     username    TEXT UNIQUE NOT NULL,
     role        TEXT NOT NULL,
-    age         INTEGER NOT NULL,
+    age         INTEGER CHECK(age >= 0) NOT NULL,
     loc_state   TEXT NOT NULL
 );
 CREATE TABLE Category (
@@ -15,26 +15,29 @@ CREATE TABLE Product (
     id          SERIAL PRIMARY KEY,
     name        TEXT NOT NULL,
     SKU         TEXT UNIQUE NOT NULL,
-    price       DECIMAL NOT NULL,
-    category    INTEGER REFERENCES Category(id) NOT NULL
+    price       DECIMAL CHECK(price >= 0) NOT NULL,
+    category    INTEGER REFERENCES Category(id) NOT NULL,
+    delete      TEXT
 );
 
-CREATE TABLE Transactions(
-    id                  SERIAL PRIMARY KEY,
-    customer            INTEGER REFERENCES Client(id) NOT NULL,
-    time                TIMESTAMP NOT NULL,
-    card_number         CHARACTER(16)
+
+CREATE TABLE Transaction (
+    id          SERIAL PRIMARY KEY,
+    customer    INTEGER REFERENCES Client (id)  NOT NULL,
+    time        TIMESTAMP,
+    card_number CHARACTER(16)
 );
 
 CREATE TABLE Purchase_History (
     id                  SERIAL PRIMARY KEY,
     customer            INTEGER REFERENCES Client(id) NOT NULL,
-    product             INTEGER REFERENCES Product(id) NOT NULL,
-    quantity            INTEGER NOT NULL,
+    product             INTEGER REFERENCES Product(id),
+    quantity            INTEGER CHECK (quantity > 0) NOT NULL,
     price_at_purchase   DECIMAL NOT NULL,
     bought              TEXT,
-    trans_id            INTEGER REFERENCES Transactions(id)
+    transaction_id       INTEGER REFERENCES Transaction(id)
 );
+
 
 -- Insert data into tables
 INSERT INTO Client (username, role, age, loc_state) VALUES ('ciciyu', 'customer', '22', 'CA');
