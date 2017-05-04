@@ -78,7 +78,6 @@
 						pstmt.setString(2, cat_description);
 						pstmt.setInt(3, (Integer)session.getAttribute("uid"));
 						int rowCount = pstmt.executeUpdate();
-
 						//commit transaction
 						conn.commit();
 						conn.setAutoCommit(true);
@@ -114,13 +113,13 @@
 						    }
 	  				  }
 					}
-					
+					System.out.println(action);
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
 						action = null;
 						System.out.println("delete");
 						statement = conn.createStatement();
-						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE delete is NULL AND Product.category = Category.id AND Category.id="+ cat_id);
+						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
 						if(!rs2.next()){ //category is empty, delete it from database
 							conn.setAutoCommit(false);
 							pstmt = conn.prepareStatement("DELETE FROM Category WHERE id= ?");
@@ -140,7 +139,6 @@
 			statement = conn.createStatement();
 			rs = statement.executeQuery("SELECT * FROM category");
 			
-
 		%>
        <div class="wrapper">
         <% 
@@ -159,7 +157,7 @@
 	          <ul class="pagelinks">
 	            <li><a href="home.jsp">Home Page</a></li>
 	            <li><a href="products.jsp">Products Page</a></li>
-	            <li><a href="product-browsing.jsp">Product Browsing Page</a></li>
+	            <li><a href="products-browsing.jsp">Product Browsing Page</a></li>
 	            <li><a href="product-order.jsp">Product Order Page</a></li>
 	          </ul>
            </td>
@@ -202,7 +200,7 @@
 		                 </form>
 		             <%  
 		             	statement = conn.createStatement();
-						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE delete is NULL AND Product.category = Category.id AND Category.id="+ rs.getInt("id"));
+						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ rs.getInt("id"));
 		             	if(!rs2.next()) {   %>
 		                 <form style="display: inline-block" action="categories.jsp" method="POST">
 		                	<button class="btn cat_btn">
@@ -229,15 +227,12 @@
             
                 // Close the ResultSet
                 rs.close();
-
                 // Close the Statement
                 statement.close();
-
                 // Close the Connection
                 conn.close();
                 
             } catch (SQLException e) {
-
                 // Wrap the SQL exception in a runtime exception to propagate
                 // it upwards
                 throw new RuntimeException(e);
@@ -245,7 +240,6 @@
             finally {
                 // Release resources in a finally block in reverse-order of
                 // their creation
-
                 if (rs != null) {
                     try {
                         rs.close();

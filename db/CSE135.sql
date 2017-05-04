@@ -35,7 +35,7 @@ CREATE TABLE Purchase_History (
     quantity            INTEGER CHECK (quantity > 0) NOT NULL,
     price_at_purchase   DECIMAL NOT NULL,
     bought              TEXT,
-    transaction_id       INTEGER REFERENCES Transaction(id)
+    trans_id            INTEGER REFERENCES Transaction(id)
 );
 
 
@@ -51,9 +51,9 @@ INSERT INTO Product (name, SKU, price, category) VALUES('cat','meow','200.01',3)
 INSERT INTO Product (name, SKU, price, category) VALUES('banana','banana','.50',2);
 INSERT INTO Product (name, SKU, price, category) VALUES('carrot','plant','.75',1);
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
-    VALUES(7,40,2,2.00,'n');
+    VALUES(7,40,2,2.00,'Y');
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
-    VALUES(7,41,3,3.00,'n');
+    VALUES(7,41,3,3.00,'Y');
 
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase)
     VALUES(7,40,2,2.00);
