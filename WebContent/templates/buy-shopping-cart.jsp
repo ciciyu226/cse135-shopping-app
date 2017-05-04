@@ -37,9 +37,11 @@ if(session.getAttribute("username")==null) {
   %>
   <table>
   <h1 style="color:blue">Welcome to Cart Checkout!</h1>
+  <p><a href="home.jsp"/>Go Back to Home Page</a></p>
   <table border="1" style="color:blue">
     <tr>
       <th>Item</th>
+      <th>Unit Price</th>
       <th>Quantity</th>
       <th>Price</th>
     </tr>
@@ -48,38 +50,51 @@ if(session.getAttribute("username")==null) {
   Statement statement = conn.createStatement();
   rs = statement.executeQuery("SELECT * FROM Purchase_History ph, Product p WHERE ph.bought IS NULL AND ph.customer="
 		  + session.getAttribute("uid") + " AND ph.product=p.id");
+  double runningSum = 0;
+  double itemSum = 0;
+  int quantitySum = 0;
+  
   while(rs.next()){
   %>
   <tr>
   	<td>
   	  <input value="<%=rs.getString("name")%>" readonly/>
   	</td>
-  	<td>
-  	  <input value="<%=rs.getInt("quantity")%>" readonly/>
-  	</td>
   	<td>  
   	  <input value="$<%=rs.getDouble("price_at_purchase")%>" readonly/>
   	</td>
+  	<td>
+  	  <input value="<%=rs.getInt("quantity")%>" readonly/>
+  	</td>
+	<td>
+	  <% itemSum = rs.getDouble("price_at_purchase") * rs.getInt("quantity");
+	     runningSum += itemSum;
+	     quantitySum += rs.getInt("quantity");
+	  %>
+	  <input value="$<%=itemSum%>" readonly/>
+	</td>
   </tr>
   <%
   }
   %>
   <tr>
   <td>Total:</td>
-  <td></td>
-  <td>
-  <%
-  statement = conn.createStatement();
-  rs = statement.executeQuery("SELECT SUM(price_at_purchase) as sum FROM Purchase_History " 
-  	+ "WHERE bought IS NULL AND customer=" + session.getAttribute("uid"));
-  rs.next();
-  %>
-  $<%=rs.getInt("sum") %>
-  </td>
+  <td>--</td>
+  <td><%=quantitySum%></td>
+  <td>$<%=runningSum%></td>
   </tr>
   </table>
-  
-  
+  <br>
+ <% if(session.getAttribute("cardMessage")!=null){ %>
+  	<h3 style="color:red"><%=session.getAttribute("cardMessage") %></h3>
+ <% 
+ 	session.removeAttribute("cardMessage");
+    } %>
+  <form action="confirmation.jsp" method="POST">
+    <input type="text" name="card_number" placeholder="Enter Card Number"/>
+  	<input type="submit" value="Buy Cart" style="width:100"/>
+  	<input type="hidden" name="p_total" value="<%=(double)itemSum%>"/>
+  </form>
   
       
     <%-- -------- Close Connection Code -------- --%>

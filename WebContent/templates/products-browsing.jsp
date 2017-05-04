@@ -150,7 +150,7 @@ if(session.getAttribute("username")==null) {
         <th>SKU</th>
         <th>Price</th>
         <th>Category</th>
-        <th></th>
+        <th>Buy</th>
     </tr>
     <%-- -------- Iteration Code -------- --%>
     <%

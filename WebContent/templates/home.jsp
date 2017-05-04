@@ -16,9 +16,10 @@
       	}
       %>
   	  <h2> Hello <%=session.getAttribute("username")%>! </h2>
-      <text>You are a <%=session.getAttribute("role")%>.</text>
+      <label>You are a <%=session.getAttribute("role")%>.</label>
       <br>
       <a href="../index.jsp">Not you? Click here to sign in to a different account.<a>
+      <p><a href="buy-shopping-cart.jsp">Go to Cart Checkout Here</a></p>
       <div class="wrapper">
   	    <h1> Home Page </h1>
   	    <div class="pagelinks">
@@ -39,8 +40,9 @@
           <ul>
             <li><a href="signup.jsp">Go to sign up</a></li>
             <li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
-            <li><a href="<%=categoryLink%>">Categories Page</a></li>
-            <li><a href="<%=productLink%>"</a>Products Page</li>
+            <li><a href="<%=categoryLink%>">Edit Categories</a></li>
+            <li><a href="<%=productLink%>">Edit Products</a></li>
+            <li><a href="products-browsing.jsp">Browse Products</a></li>
           </ul>
 	    </div>
 	  </div>

@@ -23,7 +23,8 @@ CREATE TABLE Transactions(
     id                  SERIAL PRIMARY KEY,
     customer            INTEGER REFERENCES Client(id) NOT NULL,
     time                TIMESTAMP NOT NULL,
-    card_number         CHARACTER(16)
+    card_number         CHARACTER(16),
+    total               INTEGER CHECK (total>=0)
 );
 
 CREATE TABLE Purchase_History (
@@ -48,9 +49,9 @@ INSERT INTO Product (name, SKU, price, category) VALUES('cat','meow','200.01',3)
 INSERT INTO Product (name, SKU, price, category) VALUES('banana','banana','.50',2);
 INSERT INTO Product (name, SKU, price, category) VALUES('carrot','plant','.75',1);
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
-    VALUES(7,40,2,2.00,'n');
+    VALUES(7,40,2,2.00,'Y');
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
-    VALUES(7,41,3,3.00,'n');
+    VALUES(7,41,3,3.00,'Y');
 
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase)
     VALUES(7,40,2,2.00);
