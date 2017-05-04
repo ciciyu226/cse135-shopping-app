@@ -14,6 +14,7 @@ if(session.getAttribute("username")==null) {
 	return;
 }
 %>
+<div class="wrapper">
   <header>
   	<h2>Hello <%=session.getAttribute("username") %>!</h2>
   </header>
@@ -45,12 +46,10 @@ if(session.getAttribute("username")==null) {
    <tr>
   	 <td>
   <ul>
-  	<li><a href="signup.jsp">Go to sign up</a></li>
-  	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
-  	<li><a href="home.jsp">Home Page</a></li>
-  	<li><a href="categories.jsp">Categories Page</a></li>
-  	<li>Products Page</li>
-  	<li><a href="products-browsing.jsp">Products Browsing Page</a></li>
+  	<li><a href="home.jsp">Home</a></li>
+  	<li><a href="categories.jsp">Categories</a></li>
+  	<li>Products</li>
+  	<li><a href="products-browsing.jsp">Products Browsing</a></li>
   </ul>
   	 </td>
   	 <td><h1 style="color:blue">Welcome to the Products Page!</h1></td>
@@ -458,5 +457,6 @@ if(session.getAttribute("username")==null) {
   </tr>
   </table>
   </main>
+  </div>
   </body>
 </html>

@@ -155,10 +155,10 @@
           <tr>
         	<td>
 	          <ul class="pagelinks">
-	            <li><a href="home.jsp">Home Page</a></li>
-	            <li><a href="products.jsp">Products Page</a></li>
-	            <li><a href="products-browsing.jsp">Product Browsing Page</a></li>
-	            <li><a href="product-order.jsp">Product Order Page</a></li>
+	            <li><a href="home.jsp">Home</a></li>
+	            <li>Categories</li>
+	            <li><a href="products.jsp">Products</a></li>
+	            <li><a href="products-browsing.jsp">Products Browsing</a></li>
 	          </ul>
            </td>
             <td>

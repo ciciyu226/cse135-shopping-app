@@ -27,8 +27,10 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
 	return;
 }
 %>
+<div class="wrapper">
 <header>
-  <h2 style="color:blue">Successfully Purchased the Following Items</h2>
+  <h2>Hello <%=session.getAttribute("username") %>!</h2>
+  <h1 style="color:blue">You Have Successfully Purchased the Following Items: </h1>
 </header>
 <main>
   <%-- Import the java.sql package --%>
@@ -58,7 +60,7 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
 	  //BUY THE ITEMS(MARK ITEMS AS BOUGHT IN PURCHASE_HISTORY TABLE)
 	  conn.setAutoCommit(false);
 	  
-	  pstmt = conn.prepareStatement("INSERT INTO Transactions(customer,time,card_number,total) VALUES(?,?,?,?)",
+	  pstmt = conn.prepareStatement("INSERT INTO Transaction(customer,time,card_number,total) VALUES(?,?,?,?)",
 			  Statement.RETURN_GENERATED_KEYS);
 	  pstmt.setInt(1, (Integer)session.getAttribute("uid"));
 	  
@@ -141,7 +143,7 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
 	  </tr>
 	  </table>
 	  <p>Transaction Number: <%=trans_id %></p>
-	  <p>Transaction Amount: <%=request.getParameter("p_total")%></p>
+	  <p>Transaction Amount: <%=runningSum%></p>
 	  
 	  <p>
 	  <form action="products-browsing.jsp">
@@ -190,5 +192,6 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
     }
     %>
 </main>
+</div>
 </body>
 </html>

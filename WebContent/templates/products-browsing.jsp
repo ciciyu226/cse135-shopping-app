@@ -14,7 +14,7 @@ if(session.getAttribute("username")==null) {
 	return;
 }
 %>
-<main>
+<main class="wrapper">
     <%-- Import the java.sql package --%>
     <%@ page import="java.sql.*"%>
     <%-- -------- Open Connection Code -------- --%>
@@ -35,9 +35,15 @@ if(session.getAttribute("username")==null) {
             "jdbc:postgresql://localhost:5432/postgres?" +
             "user=postgres&password=postgres");
     %>
+  <header>
+  	<h2>Hello <%=session.getAttribute("username") %>!</h2>
+  </header>
   <table>
    <tr>
   	 <td>
+  	 	 <a href="home.jsp">Home</a>
+  	 	 <a href="buy-shopping-cart.jsp">Buy Shopping Cart</a>
+  	 	 
   	 </td>
   	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td> 	 
    </tr>
