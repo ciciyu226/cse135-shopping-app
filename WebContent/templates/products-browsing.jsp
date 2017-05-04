@@ -19,13 +19,13 @@ if(session.getAttribute("username")==null) {
     <%@ page import="java.sql.*"%>
     <%-- -------- Open Connection Code -------- --%>
     <%
-    
+
     Connection conn = null;
     PreparedStatement pstmt = null;
     PreparedStatement pstmt2 = null;
     ResultSet rs = null;
     ResultSet rs2 = null;
-    
+
     try {
         // Registering Postgresql JDBC driver with the DriverManager
         Class.forName("org.postgresql.Driver");
@@ -43,9 +43,9 @@ if(session.getAttribute("username")==null) {
   	 <td>
   	 	 <a href="home.jsp">Home</a>
   	 	 <a href="buy-shopping-cart.jsp">Buy Shopping Cart</a>
-  	 	 
+
   	 </td>
-  	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td> 	 
+  	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td>
    </tr>
     <tr>
       <td></td>
@@ -65,7 +65,7 @@ if(session.getAttribute("username")==null) {
             <input placeholder="Item Name" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
        <% }
        	  else{
-       	  %> 
+       	  %>
        		<input placeholder="Item Name" name="nameSort"></input>
       <%  }%>
          <input type="submit" value="Search"></input>
@@ -73,7 +73,7 @@ if(session.getAttribute("username")==null) {
        	 %>
          	<input type="hidden" name="categoryId" value="<%=request.getParameter("categoryId")%>"></input>
          	<input type="hidden" name="categorySort" value="<%=request.getParameter("categorySort")%>"></input>
-       <%}%>	
+       <%}%>
        </form></li>
        <br>
        <li>Category:</li>
@@ -90,7 +90,7 @@ if(session.getAttribute("username")==null) {
      	 	 	<input type="hidden" name="nameSort" value="<%=request.getParameter("nameSort")%>"></input>
      	 <% } %>
      	  </form>
-     	  <% 
+     	  <%
      	  while( rs.next() ){
      		  %>
      		  	<form action="products-browsing.jsp" method="POST">
@@ -108,7 +108,7 @@ if(session.getAttribute("username")==null) {
        </li>
      </ul>
      <ul>
-       
+
      </ul>
      </td>
   	 <td>
@@ -120,27 +120,27 @@ if(session.getAttribute("username")==null) {
 
         // Use the created statement to SELECT
         // the student attributes FROM the Student table.
-        
+
         /*
          * THIS PART IS TO HANDLE THE SORTING
         */
         //Both category and search
-        if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" 
+        if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!=""
         		&& request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
-			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
-					+ request.getParameter("categoryId") + " AND name LIKE '%" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category="
+					+ request.getParameter("categoryId") + " AND name LIKE '%"
 					+ request.getParameter("nameSort") + "%'");
-			session.setAttribute("sortMessage","Sorting by category and search: " 
+			session.setAttribute("sortMessage","Sorting by category and search: "
 					+ request.getParameter("categorySort") + ", " + request.getParameter("nameSort"));
         }//Just category
         else if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" ){
-			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category="
 				+ request.getParameter("categoryId"));
 			//System.out.println(request.getParameter("categoryId"));
 			session.setAttribute("sortMessage","Sorting by category: " + request.getParameter("categorySort"));
 		}//Just search
         else if( request.getParameter("nameSort")!=null && request.getParameter("nameSort")!="" ){
-        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND name LIKE '%" 
+        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND name LIKE '%"
 					+ request.getParameter("nameSort") + "%'");
         	session.setAttribute("sortMessage","Searching for: " + request.getParameter("nameSort"));
         }//show all
@@ -156,7 +156,7 @@ if(session.getAttribute("username")==null) {
     	  <h3 style="color:red"><%=session.getAttribute("sortMessage")%></h3>
    <% 	  session.removeAttribute("sortMessage");
       } %>
-      
+
     <table border="1" style="color:blue">
     <tr>
         <th>Name</th>
@@ -174,7 +174,7 @@ if(session.getAttribute("username")==null) {
     %>
 
     <tr>
-        <form action="product-order.jsp" method="GET">
+        <form action="product-order.jsp" method="POST">
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>"/>
 
         <%-- Get the id --%>
