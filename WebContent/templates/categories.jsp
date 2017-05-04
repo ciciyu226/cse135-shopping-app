@@ -16,7 +16,6 @@
       	}
       %>
       <%
-		System.out.println(session.getAttribute("role"));
 		if(session.getAttribute("role").equals("customer") && 1==2){
 			
 			response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/error-ownerOnly.jsp");
@@ -46,8 +45,7 @@
 			String cat_description = request.getParameter("cat_description");
 		 
 			String action = request.getParameter("action");
-			
-		    	  //System.out.println ("all category fields are filled out.");			
+					
 				  //Check if cat_name is valid by checking duplicate in database
 				  //if it is valid, insert new category into database
 					
@@ -60,7 +58,6 @@
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp"); */
 						alert = "Data modification failed. Reason: Insert is empty. Please fill out the information again.";
 						session.setAttribute("error-msg", alert);
-						System.out.println("Category Info cannot be empty. Please fill up the form again.");
 					    }else{
 						statement = conn.createStatement();
 						
@@ -68,9 +65,7 @@
 						if(rs.next()){
 							alert = "Data modification failed. Reason: Category name is already exist. Try a different name.";
 							session.setAttribute("error-msg", alert);
-							System.out.println("category name is already exist. Try a different name.");
 						}else{
-						System.out.println("This category name is unique.");
 						conn.setAutoCommit(false);
 				
 						pstmt = conn.prepareStatement("INSERT INTO Category (name, description, owner) VALUES (?,?,?)");
@@ -81,6 +76,8 @@
 						//commit transaction
 						conn.commit();
 						conn.setAutoCommit(true);
+						alert = "Successfully created category: " + cat_name;
+						session.setAttribute("error-msg", alert);
 						}
 					  }
 					  action = null;
@@ -91,9 +88,7 @@
 						if(cat_name == "" | cat_description == ""){
 						alert = "Data modification failed. Reason: Update is empty. Please fill out the information again.";
 						session.setAttribute("error-msg", alert);
-						System.out.println("Category Info cannot be empty. Please fill up the form again.");
 					    }else{
-						System.out.println("update");
 						statement = conn.createStatement();
 						rs = statement.executeQuery("SELECT * FROM Category WHERE id ='" + cat_id + "'");
 							if(!rs.next()){
@@ -113,11 +108,9 @@
 						    }
 	  				  }
 					}
-					System.out.println(action);
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
 						action = null;
-						System.out.println("delete");
 						statement = conn.createStatement();
 						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
 						if(!rs2.next()){ //category is empty, delete it from database
@@ -125,7 +118,6 @@
 							pstmt = conn.prepareStatement("DELETE FROM Category WHERE id= ?");
 							pstmt.setInt(1, Integer.parseInt(cat_id));
 							int rowCount = pstmt.executeUpdate();
-							System.out.println("category is deleted");
 							conn.commit();
 							conn.setAutoCommit(true);				
 						}else {
@@ -143,7 +135,6 @@
        <div class="wrapper">
         <% 
         if(session.getAttribute("error-msg") != null){
-        System.out.println("error message: " + session.getAttribute("error-msg") );
         %>
         <h3 style="color: red"><%=session.getAttribute("error-msg") %></h3> 
         <%
@@ -166,7 +157,7 @@
 		          <ul class="categoryList">
 		          	<li>
 			          <form action="categories.jsp" method="POST">
-				          <label>Category ID: </label><input style="background-color: #dee1e5" type="text"  disabled>
+				     <!-- <label>Category ID: </label><input style="background-color: #dee1e5" type="text"  disabled> -->
 				          <label>Category Name: </label><input type="text" name="cat_name">
 				          <label>Description: </label><input type="text" name="cat_description">
 				          <div style="display: inline-block" class="cat_insert_btn text-center"> 
@@ -181,11 +172,10 @@
 					//TODO: loop through the returned list from query and display them in each list element
 					
 					while(rs.next()){
-						System.out.println("FIRST POINT");
 				   %>
 					  <li> 
 						<form style="display: inline-block" action="categories.jsp" method="POST">
-							<label>Category ID: </label><input style="background-color: #dee1e5" type="text" value="<%=rs.getInt("id")%>" disabled>
+						<!--<label>Category ID: </label><input style="background-color: #dee1e5" type="text" value="<%=rs.getInt("id")%>" disabled> -->
 							<label>Category Name: </label><input type="text" value="<%=rs.getString("name")%>" name="cat_name"/>
 		                	<label>Description: </label><input type="text" placeholder="some words about your category..." value="<%=rs.getString("description") %>" name="cat_description">
 		                	<%/* TODO: check if current viewer is the owner of this category, if yes, then display the edit buttons 
@@ -212,7 +202,6 @@
 		             <%  }  %>
 		            </li>
 					<%	}	
-						System.out.println("SECOND POINT");
 				  %>				    
 		        </ul>   
 		      </div>
@@ -223,7 +212,7 @@
   </main>
 
             <%-- -------- Close Connection Code -------- --%>
-            <% System.out.println("THIRD POINT");
+            <% 
             
                 // Close the ResultSet
                 rs.close();

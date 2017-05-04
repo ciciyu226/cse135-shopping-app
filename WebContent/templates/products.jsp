@@ -432,6 +432,10 @@ if(session.getAttribute("role").equals("owner")!=true) {
     		session.setAttribute("message","Price cannot be negative.");
     		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
     	}
+    	else if(e.getSQLState().equals("23503")){ //Check if Category still exists
+    		session.setAttribute("message","Category no longer available. Please choose a different one.");
+    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+    	}
     	else{
         // Wrap the SQL exception in a runtime exception to propagate
         // it upwards
@@ -439,6 +443,10 @@ if(session.getAttribute("role").equals("owner")!=true) {
         throw new RuntimeException(e);
         
     	}
+    }
+    catch(NumberFormatException e){
+		session.setAttribute("message","Price must be a number.");
+		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
     }
     finally {
         // Release resources in a finally block in reverse-order of
