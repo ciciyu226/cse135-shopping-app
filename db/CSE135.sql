@@ -5,12 +5,14 @@ CREATE TABLE Client (
     age         INTEGER CHECK(age >= 0) NOT NULL,
     loc_state   TEXT NOT NULL
 );
+
 CREATE TABLE Category (
     id          SERIAL PRIMARY KEY,
     name         TEXT UNIQUE NOT NULL,
     description  TEXT NOT NULL,
     owner       INTEGER REFERENCES Client(id) NOT NULL
 );
+
 CREATE TABLE Product (
     id          SERIAL PRIMARY KEY,
     name        TEXT NOT NULL,
@@ -20,12 +22,12 @@ CREATE TABLE Product (
     delete      TEXT
 );
 
-
 CREATE TABLE Transaction (
     id          SERIAL PRIMARY KEY,
     customer    INTEGER REFERENCES Client (id)  NOT NULL,
     time        TIMESTAMP,
-    card_number CHARACTER(16)
+    card_number CHARACTER(16),
+    total       DECIMAL CHECK (total>=0)
 );
 
 CREATE TABLE Purchase_History (
@@ -63,9 +65,11 @@ INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase)
 SELECT * FROM Client;
 SELECT * FROM Category;
 SELECT * FROM Product;
+SELECT * FROM Transaction;
 SELECT * FROM Purchase_History;
 
 DROP TABLE Client CASCADE;
 DROP TABLE Category CASCADE;
 DROP TABLE Product CASCADE;
+DROP TABLE Transaction CASCADE;
 DROP TABLE Purchase_History CASCADE;

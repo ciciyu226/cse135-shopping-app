@@ -39,7 +39,7 @@
     	System.out.println("=======================================");
         String product_id = request.getParameter("id");
     	System.out.println("product_id: "+product_id);
-        String quantity = request.getParameter("quantity");  //TODO: need to parse to int later
+        String quantity = request.getParameter("quantity");  
         String price = request.getParameter("price");
         System.out.println("quantity: "+ quantity);
         String action = request.getParameter("action");
@@ -72,8 +72,8 @@
 		   					//check if product already exists in product_history table
 		   					//if it is, just update instead of insert
 		   					statement = conn.createStatement();
-						    rs3= statement.executeQuery("SELECT * FROM Purchase_History WHERE product=" + product_id);
-		   					if(rs3.next()){
+						    rs3= statement.executeQuery("SELECT * FROM Purchase_History WHERE bought is NULL AND product=" + product_id);
+						    if(rs3.next()){
 		   					  
 		   						//Begin transaction
 					    		conn.setAutoCommit(false);
@@ -90,7 +90,7 @@
 		   					msgSuccess= "Your new product quantity is submitted.";
 		   					session.setAttribute("msg", msgSuccess);
 		   					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
-		   					}else{
+		   					}else {
 				    		
 		    				System.out.println("insert new tuple with submitted quantity");
 				    	    //Begin transaction
@@ -129,10 +129,14 @@
     //TODO: if quantity change, display message: quantity of product x you want to buy has changed to y.
     %>
     <main class="wrapper">
+    <header>
+  		<h2>Hello <%=session.getAttribute("username") %>!</h2>
+  	</header>
      <% if(session.getAttribute("msg-pOrder") != null) { %>
      <h3 style="color: red"><%=session.getAttribute("msg-pOrder") %></h3>
      <% session.removeAttribute("msg-pOrder");
      }%>
+     <a href="home.jsp">Home</a>
      <a href="products-browsing.jsp">Go back to PRODUCT BROWSING</a>
      <h1>Product Order Page (shopping cart)</h1>
    <table border="1">
@@ -156,8 +160,7 @@
 	<%-- -------- Iteration Code -------- --%>
 	<tr>
 	<% System.out.println("FIRST POINT"); %>
-   <form action="buy-shopping-cart.jsp" method="POST">
-   	   <input type="hidden" name="action" value="submit-quantity"/>
+   <form action="buy-shopping-cart.jsp" method="POST"> 	   
   <%  while(rs.next()){
 	  System.out.println("Second POINT");%>
     <tr> 
@@ -191,8 +194,13 @@
     <%
         }
     %> 
-    </form>    
+    </table>
+    <tr>
+    	<td><input type="submit" value="Confirm Shopping Cart"></td>
     </tr>
+    </form>    
+   
+   
 
     <%-- -------- Close Connection Code -------- --%>
     <%
@@ -235,7 +243,6 @@
         }
     }
     %>
-   </table>
    </td>
    </tr>
   </table>

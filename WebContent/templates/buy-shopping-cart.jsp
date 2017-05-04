@@ -35,6 +35,9 @@ if(session.getAttribute("username")==null) {
           "jdbc:postgresql://localhost:5432/postgres?" +
           "user=postgres&password=postgres");
   %>
+  <header>
+  	<h2>Hello <%=session.getAttribute("username") %>!</h2>
+  </header>
   <table>
   <h1 style="color:blue">Welcome to Cart Checkout!</h1>
   <p><a href="home.jsp"/>Go Back to Home Page</a></p>
