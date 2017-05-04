@@ -38,7 +38,8 @@
 					session.setAttribute("error-msg", alert);
 					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
 					System.out.println("Info cannot be empty. Please fill up the form again.");
-				}			
+				}
+
 		    	else { 
 		    	  System.out.println ("all fields are filled out.");			
 				  //Check if username is valid by checking duplicate in database
@@ -52,8 +53,13 @@
 				  	System.out.println("username is already exist. Try a different name.");
 				  }else {
 					try {
-						Integer.parseInt(age);
-				
+						if(Integer.parseInt(age) < 0){
+							alert = "Age cannot be negative.";
+							session.setAttribute("error-msg", alert);
+							response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp");
+							System.out.println("Age cannot be negative.");	
+						}else{
+						
 						//Create the prepared statement and use it to insert signup 
 						//user information
 						pstmt = conn.prepareStatement("INSERT INTO Client(username, role, age, loc_state) VALUES (?,?,?,?)");
@@ -73,6 +79,7 @@
 	        		    conn.close();
 	        		    
 						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-success.jsp");
+						}
 					}catch (NumberFormatException e) {
 						alert = "Age must be an integer";
 						session.setAttribute("error-msg", alert);

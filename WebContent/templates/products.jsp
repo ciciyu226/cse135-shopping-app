@@ -49,7 +49,8 @@ if(session.getAttribute("username")==null) {
   	<li><a href="/CSE135Project1_eclipse/index.jsp">Go to log in</a></li>
   	<li><a href="home.jsp">Home Page</a></li>
   	<li><a href="categories.jsp">Categories Page</a></li>
-  	<li><a href="products.jsp"></a>Products Page</li>
+  	<li>Products Page</li>
+  	<li><a href="products-browsing.jsp">Products Browsing Page</a></li>
   </ul>
   	 </td>
   	 <td><h1 style="color:blue">Welcome to the Products Page!</h1></td>
@@ -116,6 +117,7 @@ if(session.getAttribute("username")==null) {
     <%-- -------- INSERT Code -------- --%>
     <%
         String action = request.getParameter("action");
+    	String alert = null;
         // Check if an insertion is requested
         if (action != null && action.equals("insert")) { 
 
@@ -127,7 +129,11 @@ if(session.getAttribute("username")==null) {
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
             else {
-	            // Begin transaction
+            	if(Double.parseDouble(request.getParameter("price")) < 0){
+            		alert = "Price cannot be negative.";
+    				session.setAttribute("message", alert);
+            	}else{
+            	// Begin transaction
 	            conn.setAutoCommit(false);
 	
 	            // Create the prepared statement and use it to
@@ -148,6 +154,7 @@ if(session.getAttribute("username")==null) {
 	            action = null;
 	            session.setAttribute("message", request.getParameter("name")+" was added to the list.");
             }
+          }
         }
     %>
     <%-- -------- UPDATE Code -------- --%>
@@ -163,7 +170,10 @@ if(session.getAttribute("username")==null) {
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
             else {
-	        	
+            	if(Double.parseDouble(request.getParameter("price")) < 0){
+            		alert = "Price cannot be negative.";
+    				session.setAttribute("message", alert);
+            	}else{
 	            // Begin transaction
 	            conn.setAutoCommit(false);
 	
@@ -187,7 +197,9 @@ if(session.getAttribute("username")==null) {
 	            action = null;
 	            session.setAttribute("message", request.getParameter("name")+" was updated.");
             }
+          }
         }
+        	
     %>
     <%-- -------- DELETE Code -------- --%>
     <%

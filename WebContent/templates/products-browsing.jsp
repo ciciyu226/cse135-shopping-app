@@ -39,9 +39,16 @@ if(session.getAttribute("username")==null) {
    <tr>
   	 <td>
   	 </td>
-  	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td>
+  	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td> 	 
    </tr>
-   </tr>
+    <tr>
+      <td></td>
+      <%if(session.getAttribute("msg") != null){ %>
+      <td><h3 style="color:green"><%=session.getAttribute("msg") %></h3></td>
+      <% session.removeAttribute("msg");
+        }%>
+    </tr>
+    <tr>
      <td>
      <!-- SORTING SECTION -->
      <ul>
@@ -114,26 +121,26 @@ if(session.getAttribute("username")==null) {
         //Both category and search
         if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" 
         		&& request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
-			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
 					+ request.getParameter("categoryId") + " AND name LIKE '%" 
 					+ request.getParameter("nameSort") + "%'");
 			session.setAttribute("sortMessage","Sorting by category and search: " 
 					+ request.getParameter("categorySort") + ", " + request.getParameter("nameSort"));
         }//Just category
         else if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" ){
-			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
 				+ request.getParameter("categoryId"));
 			//System.out.println(request.getParameter("categoryId"));
 			session.setAttribute("sortMessage","Sorting by category: " + request.getParameter("categorySort"));
 		}//Just search
         else if( request.getParameter("nameSort")!=null && request.getParameter("nameSort")!="" ){
-        	rs = statement.executeQuery("SELECT * FROM product WHERE name LIKE '%" 
+        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND name LIKE '%" 
 					+ request.getParameter("nameSort") + "%'");
         	session.setAttribute("sortMessage","Searching for: " + request.getParameter("nameSort"));
         }//show all
 		else{
 			session.removeAttribute("sortMessage");
-        	rs = statement.executeQuery("SELECT * FROM product");
+        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL");
 		}
     %>
         <!-- Print out the message -->
@@ -161,7 +168,7 @@ if(session.getAttribute("username")==null) {
     %>
 
     <tr>
-        <form action="product-order.jsp" method="POST">
+        <form action="product-order.jsp" method="GET">
             <input type="hidden" name="id" value="<%=rs.getInt("id")%>"/>
 
         <%-- Get the id --%>
@@ -189,6 +196,8 @@ if(session.getAttribute("username")==null) {
         <td>
        	  <input type="submit" value="Details>>" size="15"/>
         </td>
+        </form>
+      </tr>
         <%
         }
     %>

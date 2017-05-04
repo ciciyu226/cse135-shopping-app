@@ -30,6 +30,7 @@
 	    	  	//Only customers can see this
 	    	  	categoryLink = "error-ownerOnly.jsp";
 	    	  	productLink = "error-ownerOnly.jsp";
+				
     	    }
     	    else if(session.getAttribute("role").equals("owner")){
     	  	  	//Only owners can see this
