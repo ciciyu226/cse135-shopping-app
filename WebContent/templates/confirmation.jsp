@@ -51,6 +51,7 @@ if(session.getAttribute("username")==null) {
 	  if(checkRS.next()==false){
 		  //Cart is empty
 		  session.setAttribute("message","Cart was empty. Please add something to cart first.");
+		  System.out.println("SETTING SORT MESSAGE FROM CONFIRMATION");
 		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
 		  return;
 	  }

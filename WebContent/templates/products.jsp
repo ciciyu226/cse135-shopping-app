@@ -136,6 +136,15 @@ if(session.getAttribute("role").equals("owner")!=true) {
             	
             	// Begin transaction
 	            conn.setAutoCommit(false);
+            	
+	            Statement cat_check = conn.createStatement();
+	            ResultSet rs4 = cat_check.executeQuery("SELECT * FROM category WHERE id=" + request.getParameter("category"));
+	            
+	            if(!rs4.next()){
+	        		session.setAttribute("message","Category no longer available.");
+	        		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+	        		return;
+	            }
 	
 	            // Create the prepared statement and use it to
 	            // INSERT student values INTO the students table.
@@ -177,6 +186,16 @@ if(session.getAttribute("role").equals("owner")!=true) {
 	            // Begin transaction
 	            conn.setAutoCommit(false);
 	
+	            //CHECK CATEGORY STILL EXISTS
+	            Statement cat_check = conn.createStatement();
+	            ResultSet rs4 = cat_check.executeQuery("SELECT * FROM category WHERE id=" + request.getParameter("category"));
+	            
+	            if(!rs4.next()){
+	        		session.setAttribute("message","Category no longer available.");
+	        		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+	        		return;
+	            }
+	            
 	            // Create the prepared statement and use it to
 	            // UPDATE student values in the Students table.
 	            pstmt = conn
@@ -212,7 +231,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
             // Create the prepared statement and use it to
             // DELETE students FROM the Students table.
             pstmt = conn
-                .prepareStatement("DELETE FROM Product WHERE id = ?");
+                .prepareStatement("UPDATE Product SET delete='Y' WHERE id = ?");
 
             pstmt.setInt(1, Integer.parseInt(request.getParameter("id")));
             int rowCount = pstmt.executeUpdate();
@@ -243,26 +262,26 @@ if(session.getAttribute("role").equals("owner")!=true) {
         //Both category and search
         if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" 
         		&& request.getParameter("nameSort")!=null && request.getParameter("nameSort")!=""){
-			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
 					+ request.getParameter("categoryId") + " AND name LIKE '%" 
 					+ request.getParameter("nameSort") + "%'");
 			session.setAttribute("sortMessage","Sorting by category and search: " 
 					+ request.getParameter("categorySort") + ", " + request.getParameter("nameSort"));
         }//Just category
         else if( request.getParameter("categoryId")!=null && request.getParameter("categoryId")!="" ){
-			rs = statement.executeQuery("SELECT * FROM product WHERE category=" 
+			rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND category=" 
 				+ request.getParameter("categoryId"));
 			//System.out.println(request.getParameter("categoryId"));
 			session.setAttribute("sortMessage","Sorting by category: " + request.getParameter("categorySort"));
 		}//Just search
         else if( request.getParameter("nameSort")!=null && request.getParameter("nameSort")!="" ){
-        	rs = statement.executeQuery("SELECT * FROM product WHERE name LIKE '%" 
+        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL AND name LIKE '%" 
 					+ request.getParameter("nameSort") + "%'");
         	session.setAttribute("sortMessage","Searching for: " + request.getParameter("nameSort"));
         }//show all
 		else{
 			session.removeAttribute("sortMessage");
-        	rs = statement.executeQuery("SELECT * FROM product");
+        	rs = statement.executeQuery("SELECT * FROM product WHERE delete IS NULL");
 		}
     %>
     
@@ -447,6 +466,9 @@ if(session.getAttribute("role").equals("owner")!=true) {
     catch(NumberFormatException e){
 		session.setAttribute("message","Price must be a number.");
 		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+    }
+    catch(Exception category_deleted){
+    	
     }
     finally {
         // Release resources in a finally block in reverse-order of

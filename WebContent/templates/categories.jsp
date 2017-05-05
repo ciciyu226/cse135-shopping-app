@@ -171,7 +171,9 @@
 		                 </form>
 		             <%
 		             	statement = conn.createStatement();
-						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ rs.getInt("id"));
+						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.delete IS NULL AND" 
+		             		+ " Product.category = Category.id AND Category.id="
+		             			+ rs.getInt("id"));
 		             	if(!rs2.next()) {   %>
 		                 <form style="display: inline-block" action="categories.jsp" method="POST">
 		                	<button class="btn cat_btn">
