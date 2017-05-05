@@ -13,10 +13,10 @@ if(session.getAttribute("username")==null) {
 	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
 	return;
 }
-//Check if card number was input properly
+//Check if card number has valid characters
 if( request.getParameter("card_number")==null || request.getParameter("card_number")=="" 
-		|| request.getParameter("card_number").matches(".*[a-z].*")){
-	session.setAttribute("cardMessage","Please enter your payment information again.");
+		|| request.getParameter("card_number").matches(".*[ -/,:-~].*")){
+	session.setAttribute("cardMessage","Invalid character detected in card number. Must be 0-9. Please try again.");
 	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/buy-shopping-cart.jsp");
 	return;
 }
@@ -57,15 +57,26 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
 	  
 	  <!-- DB WORK HERE -->
 	  <%
+	  //CHECK IF CART IS EMPTY FIRST
+	  Statement cartCheck = conn.createStatement();
+	  ResultSet checkRS = cartCheck.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND id="
+			  + session.getAttribute("uid") );
+	  if(!checkRS.next()){
+		  //Cart is empty
+		  session.setAttribute("message","Cart was empty. Please add something to cart first.");
+		  System.out.println("SETTING SORT MESSAGE FROM CONFIRMATION");
+		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
+		  return;
+	  }
+	  
+	  
 	  //BUY THE ITEMS(MARK ITEMS AS BOUGHT IN PURCHASE_HISTORY TABLE)
 	  conn.setAutoCommit(false);
 	  
 	  pstmt = conn.prepareStatement("INSERT INTO Transaction(customer,time,card_number,total) VALUES(?,?,?,?)",
 			  Statement.RETURN_GENERATED_KEYS);
 	  pstmt.setInt(1, (Integer)session.getAttribute("uid"));
-	  
-	  System.out.println("UID IS " + session.getAttribute("uid"));
-	  
+	  //System.out.println("UID IS " + session.getAttribute("uid"));
 	  Timestamp time = new Timestamp(System.currentTimeMillis());
 	  pstmt.setTimestamp(2, time);
 	  //System.out.println("TIME IS " + time);
@@ -162,10 +173,16 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
         // Close the Connection
         conn.close();
     } catch (SQLException e) {
-
+    	if(e.getSQLState().equals("23514")){ //Check Violation
+    		session.setAttribute("cardMessage","Card number must have 16 numbers. Please try again.");
+    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/buy-shopping-cart.jsp");
+    	}
         // Wrap the SQL exception in a runtime exception to propagate
         // it upwards
-        throw new RuntimeException(e);
+        else{
+        	System.out.println("SQL EXCEPTION IS: " + e.getSQLState());
+        	throw new RuntimeException(e);
+        }
     }
     finally {
         // Release resources in a finally block in reverse-order of

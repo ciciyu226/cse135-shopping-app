@@ -156,6 +156,12 @@ if(session.getAttribute("username")==null) {
     	  <h3 style="color:red"><%=session.getAttribute("sortMessage")%></h3>
    <% 	  session.removeAttribute("sortMessage");
       } %>
+        <%if( session.getAttribute("message")!=null )
+   	  {
+    	%>
+    	  <h3 style="color:red"><%=session.getAttribute("message")%></h3>
+   <% 	  session.removeAttribute("message");
+      } %>
 
     <table border="1" style="color:blue">
     <tr>

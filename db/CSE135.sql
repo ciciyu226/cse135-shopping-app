@@ -26,7 +26,7 @@ CREATE TABLE Transaction (
     id          SERIAL PRIMARY KEY,
     customer    INTEGER REFERENCES Client (id)  NOT NULL,
     time        TIMESTAMP,
-    card_number CHARACTER(16),
+    card_number TEXT CHECK (LENGTH(card_number)=16),
     total       DECIMAL CHECK (total>=0)
 );
 
@@ -52,6 +52,8 @@ INSERT INTO Product (name, SKU, price, category) VALUES('dog','woof','200.0',3);
 INSERT INTO Product (name, SKU, price, category) VALUES('cat','meow','200.01',3);
 INSERT INTO Product (name, SKU, price, category) VALUES('banana','banana','.50',2);
 INSERT INTO Product (name, SKU, price, category) VALUES('carrot','plant','.75',1);
+INSERT INTO Product (name, SKU, price, category) VALUES('carrot','','.75',1);
+
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
     VALUES(7,40,2,2.00,'Y');
 INSERT INTO Purchase_History(customer, product, quantity, price_at_purchase, bought)
