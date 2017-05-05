@@ -13,19 +13,6 @@ if(session.getAttribute("username")==null) {
 	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
 	return;
 }
-//Check if card number has valid characters
-if( request.getParameter("card_number")==null || request.getParameter("card_number")=="" 
-		|| request.getParameter("card_number").matches(".*[ -/,:-~].*")){
-	session.setAttribute("cardMessage","Invalid character detected in card number. Must be 0-9. Please try again.");
-	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/buy-shopping-cart.jsp");
-	return;
-}
-//Check if cart was empty
-if( request.getParameter("p_total")==null || request.getParameter("p_total")=="" ){
-	session.setAttribute("sortMessage","Cart was empty. Please add something to cart first.");
-	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
-	return;
-}
 %>
 <div class="wrapper">
 <header>
@@ -59,14 +46,20 @@ if( request.getParameter("p_total")==null || request.getParameter("p_total")==""
 	  <%
 	  //CHECK IF CART IS EMPTY FIRST
 	  Statement cartCheck = conn.createStatement();
-	  ResultSet checkRS = cartCheck.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND id="
+	  ResultSet checkRS = cartCheck.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND customer="
 			  + session.getAttribute("uid") );
-	  if(!checkRS.next()){
+	  if(checkRS.next()==false){
 		  //Cart is empty
 		  session.setAttribute("message","Cart was empty. Please add something to cart first.");
-		  System.out.println("SETTING SORT MESSAGE FROM CONFIRMATION");
 		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
 		  return;
+	  }
+	  //Check if card number has valid characters
+	  if( request.getParameter("card_number")==null || request.getParameter("card_number")=="" 
+	  		|| request.getParameter("card_number").matches(".*[ -/,:-~].*")){
+	  	session.setAttribute("cardMessage","Invalid character detected in card number. Must be 0-9. Please try again.");
+	  	response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/buy-shopping-cart.jsp");
+	  	return;
 	  }
 	  
 	  

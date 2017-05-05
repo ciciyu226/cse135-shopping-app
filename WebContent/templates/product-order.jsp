@@ -78,7 +78,7 @@
 		   						//Begin transaction
 					    		conn.setAutoCommit(false);
 					    		
-					    		pstmt = conn.prepareStatement("UPDATE Purchase_History SET quantity= ? WHERE product="+ product_id);
+					    		pstmt = conn.prepareStatement("UPDATE Purchase_History SET quantity= ? WHERE bought is NULL AND product="+ product_id);
 					    		pstmt.setInt(1, Integer.parseInt(quantity));
 					  
 					    		int rowCount = pstmt.executeUpdate();
