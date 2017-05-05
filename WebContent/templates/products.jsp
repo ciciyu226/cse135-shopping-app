@@ -178,11 +178,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
             		||request.getParameter("price")==""||request.getParameter("category")==""){
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
-            else {
-            	if(Double.parseDouble(request.getParameter("price")) < 0){
-            		alert = "Price cannot be negative.";
-    				session.setAttribute("message", alert);
-            	}else{
+            else {            	
 	            // Begin transaction
 	            conn.setAutoCommit(false);
 	
@@ -221,7 +217,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
 	            
 	            action = null;
 	            session.setAttribute("message", request.getParameter("name")+" was updated.");
-            }
+            
           }
         }
         	
