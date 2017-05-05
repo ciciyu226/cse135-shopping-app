@@ -206,6 +206,7 @@ if(session.getAttribute("username")==null) {
           <input value="<%=rs2.getString("name")%>" name="category" size="15"  readonly/>
         </td>
         <td>
+          <input type="hidden" name="valid-request" value="true"/>
        	  <input type="submit" value="Details>>" size="15"/>
         </td>
         </form>
