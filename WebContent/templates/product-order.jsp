@@ -53,8 +53,8 @@
     		statement = conn.createStatement();
 			rs = statement.executeQuery("SELECT * FROM Product WHERE delete= 'Y' and id ='" + product_id + "'");
 				if(rs.next()){
-					alert = "Data modification failed. Reason: This product has already been deleted by an owner.";
-					session.setAttribute("error-msg", alert);
+					alert = "Update quantity failed: This product has already been deleted by an owner.";
+					session.setAttribute("msg-pOrder", alert);
 					System.out.println("This product has already been deleted by other user.");
 				}
 				else {
