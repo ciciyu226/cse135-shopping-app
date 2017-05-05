@@ -98,6 +98,9 @@
 					}
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
+						 statement = conn.createStatement();
+						 rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
+						 if(!rs2.next()){ //category is empty, delete it from database
 						//category is empty, delete it from database
 							conn.setAutoCommit(false);
 							pstmt = conn.prepareStatement("DELETE FROM Category WHERE id= ?");
@@ -105,6 +108,10 @@
 							int rowCount = pstmt.executeUpdate();
 							conn.commit();
 							conn.setAutoCommit(true);
+							}else {
+							alert = "Data modification failed. Reason: Category is not empty.";
+							session.setAttribute("error-msg", alert);
+							}
 					}
 
 

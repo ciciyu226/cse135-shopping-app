@@ -175,7 +175,7 @@ if(session.getAttribute("username")==null) {
     <%
         // Iterate over the ResultSet
         while (rs.next()) {
-        	rs2 = statement2.executeQuery("SELECT name FROM category WHERE delete IS NULL AND id='" + rs.getInt("category") + "'");
+        	rs2 = statement2.executeQuery("SELECT name FROM category WHERE id='" + rs.getInt("category") + "'");
         	rs2.next();
     %>
 

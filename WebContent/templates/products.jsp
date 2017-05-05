@@ -467,9 +467,6 @@ if(session.getAttribute("role").equals("owner")!=true) {
 		session.setAttribute("message","Price must be a number.");
 		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
     }
-    catch(Exception category_deleted){
-    	
-    }
     finally {
         // Release resources in a finally block in reverse-order of
         // their creation
