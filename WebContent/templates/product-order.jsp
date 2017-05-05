@@ -144,6 +144,7 @@
         <tr>
 	        <form action="product-order.jsp" method="POST">
 	        	<input type="hidden" name="action" value="submit-quantity"/>
+	        	<input type="hidden" name="valid-request" value="true"/>
 	        	<%
 	        	String a,b,c;
 	        	if(request.getParameter("id")==null){
@@ -172,7 +173,7 @@
 	<%-- -------- Iteration Code -------- --%>
 	<tr>
 	<% System.out.println("FIRST POINT"); %>
-   <form action="buy-shopping-cart.jsp" method="POST"> 	   
+   	<form action="buy-shopping-cart.jsp" method="POST">
   <%  while(rs.next()){
 	  System.out.println("Second POINT");%>
     <tr> 

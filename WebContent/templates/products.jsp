@@ -37,6 +37,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
     ResultSet rs = null;
     ResultSet rs2 = null;
     ResultSet rs3 = null;
+    boolean showDeleted = false;
     
     try {
         // Registering Postgresql JDBC driver with the DriverManager
@@ -55,9 +56,12 @@ if(session.getAttribute("role").equals("owner")!=true) {
   	<li><a href="categories.jsp">Categories</a></li>
   	<li>Products</li>
   	<li><a href="products-browsing.jsp">Products Browsing</a></li>
+  	<p><a href="buy-shopping-cart.jsp">Buy Items in Cart</a></p>
   </ul>
   	 </td>
-  	 <td><h1 style="color:blue">Welcome to the Products Page!</h1></td>
+  	 <td><h1 style="color:blue">Welcome to the Products Page!</h1>
+  	 
+  	 </td>
    </tr>
    </tr>
      <td>
@@ -288,8 +292,12 @@ if(session.getAttribute("role").equals("owner")!=true) {
     <!-- Add an HTML table header row to format the results -->
     
     <!-- Print out the message -->
-    <%if( session.getAttribute("message")!=null && session.getAttribute("sortMessage")!=null )
+    <%
+    if( session.getAttribute("message")!=null && session.getAttribute("sortMessage")!=null )
    	  {
+    	String att = (String)session.getAttribute("message");
+    	if(att.equals("SKU is not unique. Please try a different one."))
+    		showDeleted = true;
     	%>
     	  <h3 style="color:red"><%=session.getAttribute("message")%> <%=session.getAttribute("sortMessage")%></h3>
    <%     session.removeAttribute("message");
@@ -297,6 +305,9 @@ if(session.getAttribute("role").equals("owner")!=true) {
       }
       else if( session.getAttribute("message")!=null )
    	  {
+      	String att = (String)session.getAttribute("message");
+      	if(att.equals("SKU is not unique. Please try a different one."))
+      		showDeleted = true;
     	%>
     	  <h3 style="color:red"><%=session.getAttribute("message")%></h3>
    <%     session.removeAttribute("message");
@@ -313,7 +324,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
      	<!-- Removed id here -->
         <th>Name</th>
         <th>SKU</th>
-        <th>Price</th>
+        <th>Price($.$$)</th>
         <th>Category</th>
     </tr>
     
@@ -351,7 +362,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
         // Iterate over the ResultSet
         while (rs.next()) {
         	statement2 = conn.createStatement();
-        	statement3 = conn.createStatement();
+        	statement3 = conn.createStatement(); //ADDED
         	rs2 = statement2.executeQuery("SELECT id,name FROM category");        
     %>
 
@@ -375,13 +386,14 @@ if(session.getAttribute("role").equals("owner")!=true) {
 
         <%-- Get the price --%>
         <td>
-            <input value="<%=rs.getString("price")%>" name="price" size="15"/>
+            <input value="$<%=rs.getString("price")%>" name="price" size="15"/>
         </td>
 
         <%-- Get the category --%>
-        <td>
+        <th>
             <select name="category">
             <%
+            statement3 = conn.createStatement();
         	rs3 = statement3.executeQuery("SELECT name FROM category WHERE id=" + rs.getInt("category"));
         	rs3.next();
         	String cat_name = rs3.getString("name");
@@ -397,7 +409,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
             }
             %>
             </select>
-        </td>
+        </th>
 
         <%-- Button --%>
         <!-- HTML FOR UPDATE AND DELETE IS ABOVE AND BELOW THIS -->
@@ -430,8 +442,82 @@ if(session.getAttribute("role").equals("owner")!=true) {
     </tr>
 
     <%
-        }
+        } //end while
+        	
     %>
+    
+      </table>
+  </td>
+  <td>
+  
+    	     <!-- SHOW DELETED PRODUCTS -->
+    <%
+    
+    if(showDeleted){
+    	
+        // Iterate over the ResultSet
+		Statement deleted = conn.createStatement();
+		System.out.println("BEFORE EXECUTE");
+        ResultSet rsDeleted = deleted.executeQuery("SELECT * FROM product WHERE delete='Y'");
+        
+        %>
+        
+        <table border="1" style="color:red">
+		  <tr><td>Past Items' SKUs</td></tr>
+		  <tr>
+		    <td>Name</td>
+		    <td>SKU</td>
+		    <td>Price($.$$)</td>
+		    <td>CategoryId</td>
+		  </tr>
+        
+        <% 
+        
+        while (rsDeleted.next()) {
+        	System.out.println("ENTERING");
+    %>
+    	<tr>
+	<!--    <form action="products.jsp" method="POST"> 
+            <input type="hidden" name="action" value="update"/>
+            <input type="hidden" name="id" value=""/>
+	-->
+        <%-- Get the id --%>
+		<!-- Removed id here -->
+
+        <%-- Get the name --%>
+        <td>
+            <input value="<%=rsDeleted.getString("name")%>" name="name" size="15"/>
+        </td>
+
+        <%-- Get the SKU --%>
+        <td>
+            <input value="<%=rsDeleted.getString("SKU")%>" name="SKU" size="15"/>
+        </td>
+
+        <%-- Get the price --%>
+        <td>
+            <input value="$<%=rsDeleted.getString("price")%>" name="price" size="15"/>
+        </td>
+
+        <%-- Get the category --%>
+        <td>
+            <input value="<%=rsDeleted.getInt("category")%>" name="category" size="15"/>
+        </td>
+       <!-- </form>-->
+      </tr>
+      
+      <% 
+        } System.out.println("DONE");
+      %>
+      </table>
+      <% 
+    } 
+    %>
+  
+  </td>
+  </tr>
+  </table>
+    
     <%-- -------- Close Connection Code -------- --%>
     <%
         // Close the ResultSet
@@ -491,10 +577,6 @@ if(session.getAttribute("role").equals("owner")!=true) {
         }
     }
     %>
-  </table>
-  </td>
-  </tr>
-  </table>
   </main>
   </div>
   </body>

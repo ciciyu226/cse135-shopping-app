@@ -138,6 +138,7 @@
 	            <li>Categories</li>
 	            <li><a href="products.jsp">Products</a></li>
 	            <li><a href="products-browsing.jsp">Products Browsing</a></li>
+	            <p><a href="buy-shopping-cart.jsp">Buy Items in Cart</a></p>
 	          </ul>
            </td>
             <td>

@@ -42,7 +42,7 @@ if(session.getAttribute("username")==null) {
    <tr>
   	 <td>
   	 	 <a href="home.jsp">Home</a>
-  	 	 <a href="buy-shopping-cart.jsp">Buy Shopping Cart</a>
+  	 	 <p><a href="buy-shopping-cart.jsp">Buy Items in Cart</a></p>
 
   	 </td>
   	 <td><h1 style="color:blue">Welcome to the Products Browsing Page!</h1></td>
