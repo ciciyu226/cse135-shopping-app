@@ -10,7 +10,10 @@
  <body>
 	<div class="wrapper">
 		<h1>Your signup failed.</h1>
+		<%if(session.getAttribute("error-msg") != null){ %>
 		<h3>-- Reason: <%= session.getAttribute("error-msg")%></h3>
+		<%session.removeAttribute("error-msg");
+		}%>
 		<a href="/CSE135Project1_eclipse/templates/signup.jsp">Go back to sign up</a>
 	</div>
  </body>

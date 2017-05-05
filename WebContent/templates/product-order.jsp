@@ -25,6 +25,7 @@
     ResultSet rs = null;
     ResultSet rs2 = null;
     ResultSet rs3 = null;
+    String alert = null;
     
     try {
         // Registering Postgresql JDBC driver with the DriverManager
@@ -43,9 +44,9 @@
         String price = request.getParameter("price");
         System.out.println("quantity: "+ quantity);
         String action = request.getParameter("action");
-    	String alert = null;
-    	String msgSuccess= null;
     	
+    	String msgSuccess= null;
+      if(quantity != null){
     	if(action != null && action.equals("submit-quantity")){
     		action = null;
     		
@@ -57,17 +58,11 @@
 					System.out.println("This product has already been deleted by other user.");
 				}
 				else {
-				  try {
 		    		if(quantity == ""){
 		    			alert = "Update quantity failed: Quantity is empty.";
 		    			session.setAttribute("msg-pOrder", alert);
 		    			System.out.println(alert);
 		    		}
-			    	else if(Integer.parseInt(quantity) < 1) {
-			    		alert = "Update quantity failed: Quantity cannot be zero or negative.";
-		    			session.setAttribute("msg-pOrder", alert);
-		    			System.out.println(alert);
-			    	}
 		    		else{
 		   					//check if product already exists in product_history table
 		   					//if it is, just update instead of insert
@@ -110,15 +105,10 @@
 				    		session.setAttribute("msg", msgSuccess);
 				    		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products-browsing.jsp");
 		   					}
-
-		   			  }
-				  }catch (NumberFormatException e){
-					  alert = "Quantity must be an integer";
-					  session.setAttribute("msg-pOrder", alert);
-					  System.out.println("Quantity must be an integer");	
-				  }
-    		  }
+		   			  }	  
+    		   }
     	}
+      }
     	//Handling SELECT All
     	statement = conn.createStatement();
 		rs = statement.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND customer='"+ session.getAttribute("uid") + "'");
@@ -149,9 +139,26 @@
         <tr>
 	        <form action="product-order.jsp" method="POST">
 	        	<input type="hidden" name="action" value="submit-quantity"/>
-	        	<td><input value="<%= request.getParameter("id") %>" name="id" size=15 readonly/></td>
-	        	<td><input value="<%= request.getParameter("name") %>" name="name" size=15 readonly/></td>
-	        	<td><input value="<%= request.getParameter("price") %>" name="price" size=15 readonly/></td>
+	        	<%
+	        	String a,b,c;
+	        	if(request.getParameter("id")==null){
+	        		a = (String)session.getAttribute("prod_id");
+	        		b = (String)session.getAttribute("prod_name");
+	        		c = (String)session.getAttribute("prod_price");
+	        		session.removeAttribute("prod_id");
+	        		session.removeAttribute("prod_name");
+	        		session.removeAttribute("prod_price");
+	        	}
+	        	else{
+	        		a = request.getParameter("id");
+	        		b = request.getParameter("name");
+	        		c = request.getParameter("price");
+	        	}
+	        	%>
+	        	
+	        	<td><input value="<%= a %>" name="id" size=15 readonly/></td>
+	        	<td><input value="<%= b %>" name="name" size=15 readonly/></td>
+	        	<td><input value="<%= c %>" name="price" size=15 readonly/></td>
 	        	<td><input value="" placeholder="Enter quantity" name="quantity" size=15 /></td>
 	        	<td><input type="submit" value="Confirm Quantity"></td>
 	        </form>
@@ -214,11 +221,27 @@
         // Close the Connection
         conn.close();
     } catch (SQLException e) {
-
-        // Wrap the SQL exception in a runtime exception to propagate
-        // it upwards
+		if(e.getSQLState().equals("23514"))
+		{
+			alert = "Update quantity failed: Quantity cannot be zero or negative.";
+			session.setAttribute("msg-pOrder", alert);
+			session.setAttribute("prod_id",request.getParameter("id"));
+			session.setAttribute("prod_name",request.getParameter("name"));
+			session.setAttribute("prod_price",request.getParameter("price"));
+			response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp");
+			System.out.println(alert);
+		}else{       
         throw new RuntimeException(e);
-    }
+		}
+    } catch (NumberFormatException e){
+		  alert = "Update quantity failed: Quantity must be an integer";
+		  session.setAttribute("msg-pOrder", alert);
+		  session.setAttribute("prod_id",request.getParameter("id"));
+		  session.setAttribute("prod_name",request.getParameter("name"));
+		  session.setAttribute("prod_price",request.getParameter("price"));
+		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp");
+		  System.out.println("Quantity must be an integer");	
+	 }
     finally {
         // Release resources in a finally block in reverse-order of
         // their creation

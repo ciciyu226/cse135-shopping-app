@@ -54,37 +54,28 @@
 				  //Do something: can be insert, update
 					/* Handling INSERT*/
 					if(action != null && action.equals("insert")){
+						action = null;
 						if(cat_name == "" | cat_description == ""){
-			/* 			alert = "Info cannot be empty. Please fill out the form again.";
-						session.setAttribute("error-msg", alert);
-						response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp"); */
-						alert = "Data modification failed. Reason: Insert is empty. Please fill out the information again.";
-						session.setAttribute("error-msg", alert);
-						System.out.println("Category Info cannot be empty. Please fill up the form again.");
-					    }else{
-						statement = conn.createStatement();
-						
-						rs = statement.executeQuery("SELECT * FROM Category WHERE name ='" + cat_name + "'");
-						if(rs.next()){
-							alert = "Data modification failed. Reason: Category name is already exist. Try a different name.";
+				/* 			alert = "Info cannot be empty. Please fill out the form again.";
 							session.setAttribute("error-msg", alert);
-							System.out.println("category name is already exist. Try a different name.");
-						}else{
-						System.out.println("This category name is unique.");
-						conn.setAutoCommit(false);
-				
-						pstmt = conn.prepareStatement("INSERT INTO Category (name, description, owner) VALUES (?,?,?)");
-						pstmt.setString(1, cat_name);
-						pstmt.setString(2, cat_description);
-						pstmt.setInt(3, (Integer)session.getAttribute("uid"));
-						int rowCount = pstmt.executeUpdate();
-						//commit transaction
-						conn.commit();
-						conn.setAutoCommit(true);
+							response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/signup-failure.jsp"); */
+							alert = "Data modification failed. Reason: Insert is empty. Please fill out the information again.";
+							session.setAttribute("error-msg", alert);
+							System.out.println("Category Info cannot be empty. Please fill up the form again.");
+					    }
+						else{
+							conn.setAutoCommit(false);
+					
+							pstmt = conn.prepareStatement("INSERT INTO Category (name, description, owner) VALUES (?,?,?)");
+							pstmt.setString(1, cat_name);
+							pstmt.setString(2, cat_description);
+							pstmt.setInt(3, (Integer)session.getAttribute("uid"));
+							int rowCount = pstmt.executeUpdate();
+							//commit transaction
+							conn.commit();
+							conn.setAutoCommit(true);
 						}
 					  }
-					  action = null;
-					} 
 					/* Handling UPDATE */
 					if(action != null && action.equals("update")){
 						action = null;
@@ -93,13 +84,6 @@
 						session.setAttribute("error-msg", alert);
 						System.out.println("Category Info cannot be empty. Please fill up the form again.");
 					    }else{
-						System.out.println("update");
-						statement = conn.createStatement();
-						rs = statement.executeQuery("SELECT * FROM Category WHERE id ='" + cat_id + "'");
-							if(!rs.next()){
-								alert = "Data modification failed. Reason: This category has already been deleted by other user.";
-								session.setAttribute("error-msg", alert);
-							}else{
 							conn.setAutoCommit(false);
 							
 							pstmt = conn.prepareStatement("UPDATE Category SET name= ?, description= ? WHERE id = ?");
@@ -111,27 +95,21 @@
 							conn.commit();
 							conn.setAutoCommit(true);
 						    }
-	  				  }
+	  				  
 					}
 					System.out.println(action);
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
 						action = null;
 						System.out.println("delete");
-						statement = conn.createStatement();
-						rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
-						if(!rs2.next()){ //category is empty, delete it from database
+						//category is empty, delete it from database
 							conn.setAutoCommit(false);
 							pstmt = conn.prepareStatement("DELETE FROM Category WHERE id= ?");
 							pstmt.setInt(1, Integer.parseInt(cat_id));
 							int rowCount = pstmt.executeUpdate();
 							System.out.println("category is deleted");
 							conn.commit();
-							conn.setAutoCommit(true);				
-						}else {
-							alert = "Data modification failed. Reason: Category is not empty.";
-							session.setAttribute("error-msg", alert);
-						}			
+							conn.setAutoCommit(true);							
 					}
 				 
 			   
@@ -235,7 +213,18 @@
             } catch (SQLException e) {
                 // Wrap the SQL exception in a runtime exception to propagate
                 // it upwards
-                throw new RuntimeException(e);
+                if(e.getSQLState().equals("23505")){
+                	alert = "Data modification failed: Category name already exists. Please use a different name.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/categories.jsp");
+					System.out.println("category name already exists. Try a different name.");		
+                }else if (e.getSQLState().equals("23503")) {
+                	alert = "Data modification failed: This category is not empty.";
+					session.setAttribute("error-msg", alert);
+					response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/categories.jsp");
+                }else{
+                    throw new RuntimeException(e);
+                }
             }
             finally {
                 // Release resources in a finally block in reverse-order of
