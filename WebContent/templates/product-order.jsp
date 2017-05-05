@@ -12,6 +12,11 @@
 		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
 		return;
 	}
+    if(request.getParameter("valid-request")==null || !request.getParameter("valid-request").equals("true")){
+		session.setAttribute("error","LEL NOPE NICE TRY");
+		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
+		return;
+    }
 	%>
     
      <%-- Import the java.sql package --%>
