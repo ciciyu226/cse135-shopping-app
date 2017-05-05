@@ -99,7 +99,7 @@
 					/* Handling DELETE */
 					if(action != null && action.equals("delete")){
 						 statement = conn.createStatement();
-						 rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.category = Category.id AND Category.id="+ cat_id);
+						 rs2 = statement.executeQuery("SELECT * FROM Product, Category WHERE Product.delete is NULL AND Product.category = Category.id AND Category.id="+ cat_id);
 						 if(!rs2.next()){ //category is empty, delete it from database
 						//category is empty, delete it from database
 							conn.setAutoCommit(false);
