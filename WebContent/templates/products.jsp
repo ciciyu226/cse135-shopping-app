@@ -182,11 +182,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
             		||request.getParameter("price")==""||request.getParameter("category")==""){
             	session.setAttribute("message", "One or more field was empty. Please try again.");
             }
-            else {
-            	if(Double.parseDouble(request.getParameter("price")) < 0){
-            		alert = "Price cannot be negative.";
-    				session.setAttribute("message", alert);
-            	}else{
+            else {            	
 	            // Begin transaction
 	            conn.setAutoCommit(false);
 	
@@ -199,7 +195,13 @@ if(session.getAttribute("role").equals("owner")!=true) {
 	        		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
 	        		return;
 	            }
-	            
+	            Statement prod_check = conn.createStatement();
+	            ResultSet rs5 = prod_check.executeQuery("SELECT * FROM product WHERE delete is NULL AND id=" + request.getParameter("id"));
+	            if(!rs5.next()){
+	        		session.setAttribute("message","Product no longer available.");
+	        		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/products.jsp");
+	        		return;
+	            }
 	            // Create the prepared statement and use it to
 	            // UPDATE student values in the Students table.
 	            pstmt = conn
@@ -219,7 +221,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
 	            
 	            action = null;
 	            session.setAttribute("message", request.getParameter("name")+" was updated.");
-            }
+            
           }
         }
         	
