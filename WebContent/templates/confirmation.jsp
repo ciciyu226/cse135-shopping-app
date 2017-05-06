@@ -29,6 +29,7 @@ if(session.getAttribute("username")==null) {
   Connection conn = null;
   PreparedStatement pstmt = null;
   PreparedStatement pstmt2 = null;
+  PreparedStatement pstmt3 = null;
   ResultSet rs = null;
   ResultSet rs2 = null;
   
@@ -46,7 +47,7 @@ if(session.getAttribute("username")==null) {
 	  <%
 	  //CHECK IF CART IS EMPTY FIRST
 	  Statement cartCheck = conn.createStatement();
-	  ResultSet checkRS = cartCheck.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND customer="
+	  ResultSet checkRS = cartCheck.executeQuery("SELECT * FROM purchase_history ph, Product p WHERE ph.bought IS NULL AND p.delete IS NULL AND ph.customer="
 			  + session.getAttribute("uid") );
 	  if(checkRS.next()==false){
 		  //Cart is empty
@@ -64,7 +65,7 @@ if(session.getAttribute("username")==null) {
 	  }
 	  
 	  
-	  //BUY THE ITEMS(MARK ITEMS AS BOUGHT IN PURCHASE_HISTORY TABLE)
+	  //BUY THE ITEMS(MARK ITEMS AS BOUGHT IN PURCHASE_HISTORY TABLE AND MARK AS N/A IF PRODUCT HAS BEEN DELETED DURING CHECKOUT)
 	  conn.setAutoCommit(false);
 	  
 	  pstmt = conn.prepareStatement("INSERT INTO Transaction(customer,time,card_number,total) VALUES(?,?,?,?)",
@@ -91,20 +92,21 @@ if(session.getAttribute("username")==null) {
               throw new SQLException("Creating transaction failed, no ID obtained.");
           }
       }
-      
-      pstmt2 = conn.prepareStatement("UPDATE Purchase_History SET bought='Y', trans_id=? WHERE bought IS NULL AND customer=?");
+      System.out.println("trans_id: "+ trans_id);
+      pstmt2 = conn.prepareStatement("UPDATE Purchase_History SET bought='N' , trans_id=? WHERE bought IS NULL AND customer=?");
       pstmt2.setInt(1, trans_id);
       pstmt2.setInt(2, (Integer)session.getAttribute("uid"));
       
       pstmt2.execute();
-      conn.commit();
-      conn.setAutoCommit(true);
+      
       
 	  //SELECT FROM PURCHASE HISTORY
 	  Statement statement = conn.createStatement();
 	  rs = statement.executeQuery("SELECT * FROM Purchase_History ph, Product p WHERE trans_id="
-			  + trans_id +" AND ph.customer=" + session.getAttribute("uid") + " AND ph.product=p.id");
-	  	  
+			  + trans_id +" AND ph.customer=" + session.getAttribute("uid") + " AND ph.product=p.id AND p.delete IS NULL");
+	  
+	  
+      
 	  double runningSum = 0;
 	  double itemSum;
 	  int quantitySum = 0;
@@ -118,6 +120,15 @@ if(session.getAttribute("username")==null) {
 	  </tr>
 	  <%
 	  while(rs.next()){
+		  pstmt3 = conn.prepareStatement("UPDATE Purchase_History SET bought='Y' WHERE bought = 'N' AND trans_id=? AND product= ? AND customer=?");
+	      pstmt3.setInt(1, trans_id);
+	      pstmt3.setInt(2, rs.getInt("product"));
+	      pstmt3.setInt(3, (Integer)session.getAttribute("uid"));
+	      
+	      pstmt3.execute();
+	  
+	  conn.commit();
+	  conn.setAutoCommit(true);
 	  %>
 	  <tr>
 	  	<td>
@@ -141,6 +152,7 @@ if(session.getAttribute("username")==null) {
 	  }
 	  %>
 	  <tr>
+	  (Item may no longer be available if missing from cart.)
 	    <td>Total:</td>
 	    <td>--</td>
 	    <td><%=quantitySum%></td>

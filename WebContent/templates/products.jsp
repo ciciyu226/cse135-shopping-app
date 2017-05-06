@@ -347,7 +347,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
             <!-- Removed id here -->
             <th><input name="name" placeholder="Enter Name" size="10"/></th>
             <th><input name="SKU" placeholder="Enter SKU" size="15"/></th>
-            <th><input name="price" placeholder="Sell Price(Ex:3.99)" size="15"/></th>
+            <th>$<input name="price" placeholder="Sell Price(Ex:3.99)" size="15"/></th>
             <th><select name="category">
               <% while(rs2.next()){
               %>
@@ -388,7 +388,7 @@ if(session.getAttribute("role").equals("owner")!=true) {
 
         <%-- Get the price --%>
         <td>
-            <input value="$<%=rs.getString("price")%>" name="price" size="15"/>
+            $<input value="<%=rs.getString("price")%>" name="price" size="15"/>
         </td>
 
         <%-- Get the category --%>
@@ -469,8 +469,6 @@ if(session.getAttribute("role").equals("owner")!=true) {
 		  <tr>
 		    <td>Name</td>
 		    <td>SKU</td>
-		    <td>Price($.$$)</td>
-		    <td>CategoryId</td>
 		  </tr>
         
         <% 
@@ -488,23 +486,14 @@ if(session.getAttribute("role").equals("owner")!=true) {
 
         <%-- Get the name --%>
         <td>
-            <input value="<%=rsDeleted.getString("name")%>" name="name" size="15"/>
+            <input value="<%=rsDeleted.getString("name")%>" name="name" size="15" readonly/>
         </td>
 
         <%-- Get the SKU --%>
         <td>
-            <input value="<%=rsDeleted.getString("SKU")%>" name="SKU" size="15"/>
+            <input value="<%=rsDeleted.getString("SKU")%>" name="SKU" size="15" readonly/>
         </td>
 
-        <%-- Get the price --%>
-        <td>
-            <input value="$<%=rsDeleted.getString("price")%>" name="price" size="15"/>
-        </td>
-
-        <%-- Get the category --%>
-        <td>
-            <input value="<%=rsDeleted.getInt("category")%>" name="category" size="15"/>
-        </td>
        <!-- </form>-->
       </tr>
       

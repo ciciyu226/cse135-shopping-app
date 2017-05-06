@@ -13,15 +13,16 @@
 		return;
 	}
     if(request.getParameter("valid-request")==null || !request.getParameter("valid-request").equals("true")){
-		session.setAttribute("error","LEL NOPE NICE TRY");
+		session.setAttribute("error","Invalid Request to Go to Product Order Page");
 		response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse");
 		return;
     }
-	%>
-    
+	
+    %>
      <%-- Import the java.sql package --%>
     <%@ page import="java.sql.*"%>
     <%-- -------- Open Connection Code -------- --%>
+    
     <%
     
     Connection conn = null;
@@ -31,6 +32,8 @@
     ResultSet rs2 = null;
     ResultSet rs3 = null;
     String alert = null;
+    
+
     
     try {
         // Registering Postgresql JDBC driver with the DriverManager
@@ -116,7 +119,8 @@
       }
     	//Handling SELECT All
     	statement = conn.createStatement();
-		rs = statement.executeQuery("SELECT * FROM purchase_history WHERE bought IS NULL AND customer='"+ session.getAttribute("uid") + "'");
+		rs = statement.executeQuery("SELECT * FROM purchase_history ph, Product p WHERE ph.bought IS NULL"+ 
+				" AND ph.product=p.id AND p.delete IS NULL AND ph.customer='"+ session.getAttribute("uid") + "'");
 			
     %>
     <%
@@ -174,6 +178,7 @@
 	<tr>
 	<% System.out.println("FIRST POINT"); %>
    	<form action="buy-shopping-cart.jsp" method="POST">
+      
   <%  while(rs.next()){
 	  System.out.println("Second POINT");%>
     <tr> 
@@ -234,7 +239,7 @@
 			session.setAttribute("prod_id",request.getParameter("id"));
 			session.setAttribute("prod_name",request.getParameter("name"));
 			session.setAttribute("prod_price",request.getParameter("price"));
-			response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp");
+			response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp?valid-request=true");
 			System.out.println(alert);
 		}else{       
         throw new RuntimeException(e);
@@ -245,7 +250,7 @@
 		  session.setAttribute("prod_id",request.getParameter("id"));
 		  session.setAttribute("prod_name",request.getParameter("name"));
 		  session.setAttribute("prod_price",request.getParameter("price"));
-		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp");
+		  response.sendRedirect("http://localhost:9999/CSE135Project1_eclipse/templates/product-order.jsp?valid-request=true");
 		  System.out.println("Quantity must be an integer");	
 	 }
     finally {

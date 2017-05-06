@@ -48,16 +48,32 @@ if(session.getAttribute("username")==null) {
       <th>Quantity</th>
       <th>Price</th>
     </tr>
+ <!--  CHECK IF PRODUCT STILL EXISTS update bought to N/A if product has been deleted-->
+  <%
+/*   conn.setAutoCommit(false);
+  
+  pstmt = conn.prepareStatement("UPDATE Purchase_History ph, Product p SET bought = 'N/A' WHERE ph.bought IS NULL AND ph.customer="
+		  + session.getAttribute("uid") + " AND p.delete IS NULL");
+  int rowCount = pstmt.executeUpdate();
+	
+  // Commit transaction
+  conn.commit();
+  conn.setAutoCommit(true); */
+  
+  %>
+  
+  
   <!-- SELECT FROM PURCHASE HISTORY -->
   <%
   Statement statement = conn.createStatement();
   rs = statement.executeQuery("SELECT * FROM Purchase_History ph, Product p WHERE ph.bought IS NULL AND ph.customer="
-		  + session.getAttribute("uid") + " AND ph.product=p.id");
+		  + session.getAttribute("uid") + " AND ph.product=p.id AND p.delete IS NULL");
   double runningSum = 0;
   double itemSum = 0;
   int quantitySum = 0;
   
   while(rs.next()){
+
   %>
   <tr>
   	<td>
@@ -80,6 +96,7 @@ if(session.getAttribute("username")==null) {
   <%
   }
   %>
+  (Item may no longer be available if missing from cart.)
   <tr>
   <td>Total:</td>
   <td>--</td>
