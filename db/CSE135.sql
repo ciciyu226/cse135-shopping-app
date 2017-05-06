@@ -9,8 +9,7 @@ CREATE TABLE Client (
 CREATE TABLE Category (
     id          SERIAL PRIMARY KEY,
     name        TEXT UNIQUE NOT NULL,
-    description TEXT NOT NULL,
-    owner       INTEGER REFERENCES Client(id) NOT NULL
+    description TEXT NOT NULL
 );
 
 CREATE TABLE Product (
@@ -25,9 +24,9 @@ CREATE TABLE Product (
 CREATE TABLE Transaction (
     id          SERIAL PRIMARY KEY,
     customer    INTEGER REFERENCES Client (id)  NOT NULL,
-    time        TIMESTAMP,
-    card_number TEXT CHECK (LENGTH(card_number)=16),
-    total       DECIMAL CHECK (total>=0)
+    time        TIMESTAMP NOT NULL,
+    card_number TEXT CHECK (LENGTH(card_number)=16) NOT NULL,
+    total       DECIMAL CHECK (total>=0) NOT NULL
 );
 
 CREATE TABLE Purchase_History (
