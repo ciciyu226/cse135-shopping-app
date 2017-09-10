@@ -1,5 +1,5 @@
 # cse135-shopping-app
-Author: Cici Yu, Davis Cho
+Author: Xi Yu, Davis Cho
 
 Skill Used: JSP, jQuery, PostgreSQL, ER Model, Ajax.
 
